@@ -16,8 +16,8 @@ public class Human extends Player {
      * @return Returns true if placement is valid.
      */
     public boolean placeMarkerCheckValid(Board board, int x, int y) {
-        if (board.getPlayField()[x][y] == null) {
-            board.getPlayField()[x][y] = this;
+        if (board.getPlayField()[x-1][y-1] == null) {
+            board.getPlayField()[x-1][y-1] = this;
             return true;
         }
         else return false;
