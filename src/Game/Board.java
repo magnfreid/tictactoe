@@ -21,7 +21,7 @@ public class Board {
      */
     public void drawBoard() {
         System.out.println("Y");
-        for (int row = boardSize-1; row >= 0; row--) {
+        for (int row = boardSize - 1; row >= 0; row--) {
 
             for (int column = 0; column < boardSize; column++) {
                 Object position = playField[row][column];
@@ -39,9 +39,60 @@ public class Board {
         }
     }
 
+    /**
+     * Loops through rows, columns and diagonals to check if the player has filled a row.
+     * @param player The current player being checked for winner.
+     * @return Returns true if player is a winner.
+     */
+    public boolean checkWinner(Player player) {
+        boolean winner = true;
+        //Checks columns
+        for (int row = 0; row < boardSize; row++) {
+            for (int column = 0; column < boardSize; column++) {
+                if (playField[row][column] != player) {
+                    winner = false;
+                    break;
+                }
+            }
+            if (winner) {
+                return winner;
+            }
+        }
+        //Checks rows
+        winner = true;
+        for (int column = 0; column < boardSize; column++) {
+            for (int row = 0; row < boardSize; row++) {
+                if (playField[row][column] != player) {
+                    winner = false;
+                    break;
+                }
+            }
+            if (winner) {
+                return winner;
+            }
+        }
 
-    public void checkWinner() {
-        //TODO implement check winner method
+        //Checks diagonal
+        winner = true;
+        for (int i = 0; i < boardSize; i++) {
+            if (playField[i][i] != player) {
+                winner = false;
+                break;
+            }
+        }
+        if (winner) {
+            return winner;
+        }
+
+        //Checks anti-diagonal
+        winner = true;
+        for (int i = 0; i < boardSize; i++)
+            if (playField[i][boardSize - 1 - i] != player) {
+                winner = false;
+                break;
+            }
+
+        return winner;
     }
 
 
@@ -50,14 +101,14 @@ public class Board {
      * @return Returns true if there's no space left on the board.
      */
     public boolean checkIfBoardIsFull() {
-       for (Object[] row : playField) {
-           for (Object position : row) {
-               if (position == null) {
-                   return false;
-               }
-           }
-       }
-       return  true;
+        for (Object[] row : playField) {
+            for (Object position : row) {
+                if (position == null) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public int getBoardSize() {
@@ -66,7 +117,7 @@ public class Board {
 
     public void setBoardSize(int size) {
         this.boardSize = size;
-        this.playField = new Object[boardSize][boardSize];
+        this.playField = new Object[size][size];
     }
 
     public Object[][] getPlayField() {
