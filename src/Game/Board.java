@@ -9,38 +9,49 @@ public class Board {
     private Player player1, player2;
 
 
-    public Board(int boardSize) {
-        this.boardSize = boardSize;
+    public Board() {
+        this.boardSize = 3;
         this.playField = new Object[boardSize][boardSize];
-        this.player1 = new Player("Player 1", 'X') {
+        this.player1 = new Player("Player 1", "✘") {
         };
-        this.player2 = new Player("Player 2", 'O');
+        this.player2 = new Player("Player 2", "●");
     }
 
     /**
      * Prints the board in the terminal.
      */
     public void drawBoard() {
-        System.out.println("Y");
-        for (int row = boardSize - 1; row >= 0; row--) {
-            for (int column = 0; column < boardSize; column++) {
-                Object position = playField[column][row];
-                char draw;
+        System.out.println("𝒚");
+        for (int column = boardSize - 1; column >= 0; column--) {
+            System.out.print(column + 1 + " ");
+            for (int row = 0; row < boardSize; row++) {
+                Object position = playField[row][column];
+                String draw;
                 if (position == player1) {
                     draw = player1.getMarker();
                 } else if (position == player2) {
                     draw = player2.getMarker();
                 } else {
-                    draw = '_';
+                    draw = "_";
                 }
                 System.out.print("|" + draw);
             }
-            System.out.println(row == 0 ? "| X" : "|");
+
+            System.out.println("|");
+
+
         }
+        System.out.print("🍄 ");
+        for (int i = 0; i < boardSize; i++) {
+            System.out.print((i + 1) + " ");
+        }
+        System.out.print("𝒙");
+        System.out.println();
     }
 
     /**
      * Loops through rows, columns and diagonals to check if the player has filled a row.
+     *
      * @param player The current player being checked for winner.
      * @return Returns true if player is a winner.
      */
@@ -98,6 +109,7 @@ public class Board {
 
     /**
      * Checks if board is full of markers or not.
+     *
      * @return Returns true if there's no space left on the board.
      */
     public boolean checkIfBoardIsFull() {

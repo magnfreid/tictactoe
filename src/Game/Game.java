@@ -14,7 +14,7 @@ public class Game {
     private int round;
 
     public Game() {
-        this.board = new Board(3);
+        this.board = new Board();
         this.p1 = board.getPlayer1();
         this.p2 = board.getPlayer2();
         this.scanner = new Scanner(System.in);
@@ -24,7 +24,9 @@ public class Game {
 
     }
 
-
+    /**
+     * The main method of the game.
+     */
     public void run() {
         do {
             if (newGame) {
@@ -34,10 +36,12 @@ public class Game {
         } while (playAgain());
     }
 
-
+    /**
+     * If a new game needs to be set up, with new players.
+     */
     private void setup() {
         p1.setScore(0);
-        p1.setScore(0);
+        p2.setScore(0);
         round = 1;
         System.out.println("**** TIC-TAC-TOE *****");
         chooseBoardSize();
@@ -45,10 +49,13 @@ public class Game {
         p1.setName(scanner.nextLine());
         System.out.println("Player 2 name: ");
         p2.setName(scanner.nextLine());
-
     }
 
-
+    /**
+     * The main game loop.
+     * Players take their turn, loop ends if board is full or if there is a winner.
+     * The starting player shifts every turn.
+     */
     private void gameLoop() {
         if (!newGame) {
             System.out.println("***** ROUND " + round + " *****");
@@ -69,6 +76,12 @@ public class Game {
         }
     }
 
+    /**
+     * A single player's turn. Loops until player makes a valid placement. Ends on win or if board is full.
+     *
+     * @param player The player taking the turn.
+     * @return Returns true if board is full or if player wins after placing marker.
+     */
     public boolean playerTurn(Player player) {
         if (board.checkIfBoardIsFull()) {
             return true;
@@ -80,10 +93,10 @@ public class Game {
                 try {
                     board.drawBoard();
                     System.out.println(player.getName() + ", where do you want to place your marker? " + "(" + player.getMarker() + ")");
-                    System.out.println("X:");
+                    System.out.println("x:");
                     x = scanner.nextInt();
                     scanner.nextLine();
-                    System.out.println("Y:");
+                    System.out.println("y:");
                     y = scanner.nextInt();
                     scanner.nextLine();
                     break;
@@ -95,13 +108,13 @@ public class Game {
 
             try {
                 if (player.placeMarkerCheckValid(board, x, y)) {
-                    System.out.println(player.getName() + " placed a marker on X: " + x + " Y: " + y);
+                    System.out.println(player.getName() + " placed a marker on x: " + x + " y: " + y);
                     break;
                 } else {
-                    System.out.println("X: " + x + " Y: " + y + " is already occupied!");
+                    System.out.println("x: " + x + " y: " + y + " is already occupied!");
                 }
             } catch (RuntimeException e) {
-                System.out.println("You cannot place a marker on X: " + x + " Y: " + y + " because it is not on the board! Try again.");
+                System.out.println("You cannot place a marker on x: " + x + " y: " + y + " because it is not on the board! Try again.");
             }
 
         }
@@ -161,10 +174,16 @@ public class Game {
     private void chooseBoardSize() {
         while (true) {
             try {
-                System.out.println("Choose board size: ");
+                System.out.println("Choose board size (3-9): ");
                 int size = scanner.nextInt();
-                board.setBoardSize(size);
                 scanner.nextLine();
+                if (size < 3) {
+                    size = 3;
+                } else if (size > 9) {
+                    size = 9;
+                }
+                board.setBoardSize(size);
+
                 break;
             } catch (Exception e) {
                 scanner.nextLine();

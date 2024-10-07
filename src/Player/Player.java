@@ -4,15 +4,23 @@ import Game.Board;
 
 public class Player {
     protected String name;
-    protected char marker;
+    protected String marker;
     protected int score;
 
-    public Player(String name, char marker) {
+    public Player(String name, String marker) {
         this.name = name;
         this.marker = marker;
         this.score = 0;
     }
 
+    /**
+     * Checks if the chosen position is null/empty, adds the player to position if not occupied.
+     * @param board The current play board.
+     * @param x X-Coordinate
+     * @param y Y-Coordinate
+     * @return Returns true if marker placement is successful.
+     * @throws RuntimeException throws out of bounds error for the position in 2D-array.
+     */
     public boolean placeMarkerCheckValid(Board board, int x, int y) throws RuntimeException {
         Object position;
         try {
@@ -36,11 +44,11 @@ public class Player {
         this.name = name;
     }
 
-    public char getMarker() {
+    public String getMarker() {
         return marker;
     }
 
-    public void setMarker(char marker) {
+    public void setMarker(String marker) {
         this.marker = marker;
     }
 
