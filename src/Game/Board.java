@@ -1,7 +1,7 @@
 package Game;
 
 import Player.Player;
-import Player.Human;
+
 
 public class Board {
     private int boardSize;
@@ -12,8 +12,9 @@ public class Board {
     public Board(int boardSize) {
         this.boardSize = boardSize;
         this.playField = new Object[boardSize][boardSize];
-        this.player1 = new Human("Player 1", 'X');
-        this.player2 = new Human("Player 2", 'O');
+        this.player1 = new Player("Player 1", 'X') {
+        };
+        this.player2 = new Player("Player 2", 'O');
     }
 
     /**
@@ -108,6 +109,7 @@ public class Board {
                 }
             }
         }
+        System.out.println("The board is full, it's a draw!");
         return true;
     }
 

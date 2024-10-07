@@ -2,7 +2,7 @@ package Player;
 
 import Game.Board;
 
-public abstract class Player {
+public class Player {
     protected String name;
     protected char marker;
     protected int score;
@@ -11,6 +11,21 @@ public abstract class Player {
         this.name = name;
         this.marker = marker;
         this.score = 0;
+    }
+
+    public boolean placeMarkerCheckValid(Board board, int x, int y) throws RuntimeException {
+        Object position;
+        try {
+            position = board.getPlayField()[x-1][y-1];
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if (position == null) {
+            board.getPlayField()[x-1][y-1] = this;
+            return true;
+        }
+        else return false;
     }
 
     public String getName() {

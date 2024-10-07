@@ -1,15 +1,11 @@
 import Game.Board;
-import Player.Human;
+import Game.Game;
+import Player.Player;
 
 public class Main {
     public static void main(String[] args) {
-        Board board = new Board(3);
-        Human human = (Human) board.getPlayer1();
-        System.out.println(human.placeMarkerCheckValid(board, 1, 3));
-        System.out.println(human.placeMarkerCheckValid(board, 2, 2));
-        System.out.println(human.placeMarkerCheckValid(board, 3, 1));
-        board.drawBoard();
-        System.out.println(board.checkWinner(human));
-
+        Game game = new Game();
+        game.playerTurn(game.getBoard().getPlayer1());
+        game.getBoard().drawBoard();
     }
 }
