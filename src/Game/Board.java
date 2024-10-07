@@ -6,8 +6,7 @@ import Player.Player;
 public class Board {
     private int boardSize;
     private Object[][] playField;
-    private Player player1, player2;
-
+    private final Player player1, player2;
 
     public Board() {
         this.boardSize = 3;
@@ -36,12 +35,9 @@ public class Board {
                 }
                 System.out.print("|" + draw);
             }
-
             System.out.println("|");
-
-
         }
-        System.out.print("🍄 ");
+        System.out.print("⦿ ");
         for (int i = 0; i < boardSize; i++) {
             System.out.print((i + 1) + " ");
         }
@@ -56,33 +52,33 @@ public class Board {
      * @return Returns true if player is a winner.
      */
     public boolean checkWinner(Player player) {
-        boolean winner = true;
+        boolean winner;
         //Checks columns
-        for (int row = 0; row < boardSize; row++) {
-            for (int column = 0; column < boardSize; column++) {
-                if (playField[row][column] != player) {
+        for (int x = 0; x < boardSize; x++) {
+            winner = true;
+            for (int y = 0; y < boardSize; y++) {
+                if (playField[x][y] != player) {
                     winner = false;
                     break;
                 }
             }
             if (winner) {
-                return winner;
+                return true;
             }
         }
         //Checks rows
-        winner = true;
-        for (int column = 0; column < boardSize; column++) {
-            for (int row = 0; row < boardSize; row++) {
-                if (playField[row][column] != player) {
+        for (int y = 0; y < boardSize; y++) {
+            winner = true;
+            for (int x = 0; x < boardSize; x++) {
+                if (playField[x][y] != player) {
                     winner = false;
                     break;
                 }
             }
             if (winner) {
-                return winner;
+                return true;
             }
         }
-
         //Checks diagonal
         winner = true;
         for (int i = 0; i < boardSize; i++) {
@@ -92,9 +88,8 @@ public class Board {
             }
         }
         if (winner) {
-            return winner;
+            return true;
         }
-
         //Checks anti-diagonal
         winner = true;
         for (int i = 0; i < boardSize; i++)
@@ -102,7 +97,6 @@ public class Board {
                 winner = false;
                 break;
             }
-
         return winner;
     }
 
@@ -124,10 +118,6 @@ public class Board {
         return true;
     }
 
-    public int getBoardSize() {
-        return boardSize;
-    }
-
     public void setBoardSize(int size) {
         this.boardSize = size;
         this.playField = new Object[size][size];
@@ -141,15 +131,7 @@ public class Board {
         return player1;
     }
 
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
     public Player getPlayer2() {
         return player2;
-    }
-
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
     }
 }
