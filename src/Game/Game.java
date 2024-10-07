@@ -5,12 +5,10 @@ import Player.Player;
 import java.util.Scanner;
 
 public class Game {
-
     final private Board board;
     final private Player p1, p2;
     private final Scanner scanner;
     private boolean newGame;
-    private boolean botMatch;
     private int round;
 
     public Game() {
@@ -19,7 +17,6 @@ public class Game {
         this.p2 = board.getPlayer2();
         this.scanner = new Scanner(System.in);
         this.newGame = true;
-        this.botMatch = false;
         this.round = 1;
 
     }
@@ -119,20 +116,13 @@ public class Game {
 
         }
         if (board.checkWinner(player)) {
+            board.drawBoard();
             System.out.println(player.getName() + " is the winner!");
             player.setScore(player.getScore() + 1);
             return true;
         }
         return false;
     }
-
- /*   private boolean botTurn(Player player) {
-        if (board.checkIfBoardIsFull()) {
-            return true;
-        }
-        player.placeMarker()
-    }
-*/
 
     /**
      * Asks the player if it wants to continue playing or exit the app.
@@ -179,11 +169,12 @@ public class Game {
                 scanner.nextLine();
                 if (size < 3) {
                     size = 3;
+                    System.out.println("Size set to 3.");
                 } else if (size > 9) {
                     size = 9;
+                    System.out.println("Size zet to 9.");
                 }
                 board.setBoardSize(size);
-
                 break;
             } catch (Exception e) {
                 scanner.nextLine();
@@ -194,26 +185,5 @@ public class Game {
 
     private boolean isEvenRound() {
         return round % 2 == 0;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public Player getP1() {
-        return p1;
-    }
-
-    public Player getP2() {
-        return p2;
-    }
-
-
-    public boolean isNewGame() {
-        return newGame;
-    }
-
-    public void setNewGame(boolean newGame) {
-        this.newGame = newGame;
     }
 }
