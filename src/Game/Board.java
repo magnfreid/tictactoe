@@ -45,8 +45,15 @@ public class Board {
     }
 
 
-    public void checkIfBoardIsFull() {
-        //TODO implement a check if board is full or not
+    public boolean checkIfBoardIsFull() {
+       for (Object[] row : playField) {
+           for (Object position : row) {
+               if (position == null) {
+                   return false;
+               }
+           }
+       }
+       return  true;
     }
 
     public int getBoardSize() {
