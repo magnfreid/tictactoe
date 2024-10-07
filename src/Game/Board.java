@@ -25,7 +25,7 @@ public class Board {
         for (int row = boardSize - 1; row >= 0; row--) {
 
             for (int column = 0; column < boardSize; column++) {
-                Object position = playField[row][column];
+                Object position = playField[column][row];
                 char draw;
                 if (position == player1) {
                     draw = player1.getMarker();

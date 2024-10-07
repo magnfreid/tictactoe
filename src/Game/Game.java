@@ -11,6 +11,7 @@ public class Game {
     private final Scanner scanner;
     private boolean newGame;
     private boolean botMatch;
+    private int round;
 
     public Game() {
         this.board = new Board(3);
@@ -19,22 +20,34 @@ public class Game {
         this.scanner = new Scanner(System.in);
         this.newGame = true;
         this.botMatch = false;
+        this.round = 1;
 
     }
 
 
     public void run() {
-        //TODO implement main run method
+        setup();
+        gameLoop();
     }
 
 
     private void setup() {
-        //TODO implement setup before starting the game loop
+        System.out.println("***** TIC-TAC-TOE *****");
+
     }
 
 
     private void gameLoop() {
-        //TODO implement game loop
+        board.drawBoard();
+        while (true) {
+            if (playerTurn(isEvenRound() ? p2 : p1)) {
+                break;
+            }
+            if (playerTurn(isEvenRound() ? p1 : p2)) {
+                break;
+            }
+        }
+        round++;
     }
 
     public boolean playerTurn(Player player) {
@@ -64,13 +77,17 @@ public class Game {
                 if (player.placeMarkerCheckValid(board, x, y)) {
                     System.out.println(player.getName() + " placed a marker on X: " + x + " Y: " + y);
                     break;
+                } else {
+                    System.out.println("X: " + x + " Y: " + y + " is already occupied!");
                 }
             } catch (RuntimeException e) {
-                System.out.println("You cannot place a marker on X: " + x + " Y: " + y + ". Try again.");
+                System.out.println("You cannot place a marker on X: " + x + " Y: " + y + " because it is not on the board! Try again.");
             }
 
         }
+        board.drawBoard();
         if (board.checkWinner(player)) {
+            System.out.println(player.getName() + " is the winner!");
             player.setScore(player.getScore() + 1);
             return true;
         }
@@ -84,6 +101,10 @@ public class Game {
         player.placeMarker()
     }
 */
+
+    private boolean isEvenRound() {
+        return round % 2 == 0;
+    }
 
     private void playAgain() {
         //TODO implement question if new game or not
