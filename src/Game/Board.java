@@ -21,10 +21,10 @@ public class Board {
      */
     public void drawBoard() {
         System.out.println("𝒚");
-        for (int column = boardSize - 1; column >= 0; column--) {
-            System.out.print(column + 1 + " ");
-            for (int row = 0; row < boardSize; row++) {
-                Object position = playField[row][column];
+        for (int y = boardSize - 1; y >= 0; y--) {
+            System.out.print(y + 1 + " ");
+            for (int x = 0; x < boardSize; x++) {
+                Object position = playField[x][y];
                 String draw;
                 if (position == player1) {
                     draw = player1.getMarker();
@@ -37,7 +37,7 @@ public class Board {
             }
             System.out.println("|");
         }
-        System.out.print("⦿ ");
+        System.out.print("👻 ");
         for (int i = 0; i < boardSize; i++) {
             System.out.print((i + 1) + " ");
         }
@@ -114,7 +114,6 @@ public class Board {
                 }
             }
         }
-        System.out.println("The board is full, it's a draw!");
         return true;
     }
 

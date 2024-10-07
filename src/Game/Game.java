@@ -64,10 +64,10 @@ public class Game {
         System.out.println("Let's play!");
         System.out.println(isEvenRound() ? p2.getName() + " begins." : p1.getName() + " begins.");
         while (true) {
-            if (playerTurn(isEvenRound() ? p2 : p1)) {
+            if (turn(isEvenRound() ? p2 : p1)) {
                 break;
             }
-            if (playerTurn(isEvenRound() ? p1 : p2)) {
+            if (turn(isEvenRound() ? p1 : p2)) {
                 break;
             }
         }
@@ -79,8 +79,9 @@ public class Game {
      * @param player The player taking the turn.
      * @return Returns true if board is full or if player wins after placing marker.
      */
-    public boolean playerTurn(Player player) {
+    private boolean turn(Player player) {
         if (board.checkIfBoardIsFull()) {
+            System.out.println("The board is full, it's a draw!");
             return true;
         }
         while (true) {
@@ -113,7 +114,6 @@ public class Game {
             } catch (RuntimeException e) {
                 System.out.println("You cannot place a marker on x: " + x + " y: " + y + " because it is not on the board! Try again.");
             }
-
         }
         if (board.checkWinner(player)) {
             board.drawBoard();
@@ -148,6 +148,7 @@ public class Game {
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) {
                 newGame = false;
+                round++;
                 break;
             } else if (input.equalsIgnoreCase("no") || (input.equalsIgnoreCase("n"))) {
                 System.out.println("Starting new game.");
@@ -157,7 +158,6 @@ public class Game {
                 System.out.println("Type \"yes\" or \"no\".");
             }
         }
-        round++;
         return true;
     }
 
