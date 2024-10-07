@@ -16,18 +16,36 @@ public class Board {
         this.player2 = new Human("Player 2", 'O');
     }
 
+    /**
+     * Prints the board in the terminal.
+     */
+    public void drawBoard() {
+        System.out.println("Y");
+        for (int row = boardSize - 1; row > 0; row--) {
 
-    public void drawBoard(){
-        //TODO implement drawBoard
+            for (int column = 0; column < boardSize; column++) {
+                Object position = playField[row][column];
+                char draw;
+                if (position == player1) {
+                    draw = player1.getMarker();
+                } else if (position == player2) {
+                    draw = player2.getMarker();
+                } else {
+                    draw = '_';
+                }
+                System.out.print("|" + draw);
+            }
+            System.out.println(row == 1 ? "| X" : "|");
+        }
     }
 
 
-    public void checkWinner(){
+    public void checkWinner() {
         //TODO implement check winner method
     }
 
 
-    public void checkIfBoardIsFull(){
+    public void checkIfBoardIsFull() {
         //TODO implement a check if board is full or not
     }
 
