@@ -21,7 +21,7 @@ public class Board {
      */
     public void drawBoard() {
         System.out.println("Y");
-        for (int row = boardSize - 1; row > 0; row--) {
+        for (int row = boardSize-1; row >= 0; row--) {
 
             for (int column = 0; column < boardSize; column++) {
                 Object position = playField[row][column];
@@ -35,7 +35,7 @@ public class Board {
                 }
                 System.out.print("|" + draw);
             }
-            System.out.println(row == 1 ? "| X" : "|");
+            System.out.println(row == 0 ? "| X" : "|");
         }
     }
 

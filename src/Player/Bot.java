@@ -8,9 +8,6 @@ public class Bot extends Player {
         this.name = "BOT";
         this.marker = 'B';
     }
-
-
-
         public void placeMarker(Board board) {
             //TODO implement bot marker placement
     }
