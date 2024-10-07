@@ -23,7 +23,6 @@ public class Board {
     public void drawBoard() {
         System.out.println("Y");
         for (int row = boardSize - 1; row >= 0; row--) {
-
             for (int column = 0; column < boardSize; column++) {
                 Object position = playField[column][row];
                 char draw;

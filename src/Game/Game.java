@@ -26,19 +26,39 @@ public class Game {
 
 
     public void run() {
-        setup();
-        gameLoop();
+        do {
+            if (newGame) {
+                setup();
+            }
+            gameLoop();
+        } while (playAgain());
     }
 
 
     private void setup() {
-        System.out.println("***** TIC-TAC-TOE *****");
+        p1.setScore(0);
+        p1.setScore(0);
+        round = 1;
+        System.out.println("**** TIC-TAC-TOE *****");
+        chooseBoardSize();
+        System.out.println("Player 1 name: ");
+        p1.setName(scanner.nextLine());
+        System.out.println("Player 2 name: ");
+        p2.setName(scanner.nextLine());
 
     }
 
 
     private void gameLoop() {
-        board.drawBoard();
+        if (!newGame) {
+            System.out.println("***** ROUND " + round + " *****");
+            System.out.println("_____ Score _____");
+            System.out.println(p1.getName() + ": " + p1.getScore());
+            System.out.println(p2.getName() + ": " + p2.getScore());
+            chooseBoardSize();
+        }
+        System.out.println("Let's play!");
+        System.out.println(isEvenRound() ? p2.getName() + " begins." : p1.getName() + " begins.");
         while (true) {
             if (playerTurn(isEvenRound() ? p2 : p1)) {
                 break;
@@ -47,7 +67,6 @@ public class Game {
                 break;
             }
         }
-        round++;
     }
 
     public boolean playerTurn(Player player) {
@@ -59,6 +78,7 @@ public class Game {
             int y;
             while (true) {
                 try {
+                    board.drawBoard();
                     System.out.println(player.getName() + ", where do you want to place your marker? " + "(" + player.getMarker() + ")");
                     System.out.println("X:");
                     x = scanner.nextInt();
@@ -85,7 +105,6 @@ public class Game {
             }
 
         }
-        board.drawBoard();
         if (board.checkWinner(player)) {
             System.out.println(player.getName() + " is the winner!");
             player.setScore(player.getScore() + 1);
@@ -102,12 +121,60 @@ public class Game {
     }
 */
 
-    private boolean isEvenRound() {
-        return round % 2 == 0;
+    /**
+     * Asks the player if it wants to continue playing or exit the app.
+     * Also asks if same players should continue or to start a new game.
+     *
+     * @return Returns true if player wants to play again.
+     */
+    private boolean playAgain() {
+        System.out.println("Play again?");
+        while (true) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) {
+                break;
+            } else if (input.equalsIgnoreCase("no") || (input.equalsIgnoreCase("n"))) {
+                System.out.println("Exiting...");
+                return false;
+            } else {
+                System.out.println("Type \"yes\" or \"no\".");
+            }
+        }
+        System.out.println("Continue with the same players?");
+        while (true) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) {
+                newGame = false;
+                break;
+            } else if (input.equalsIgnoreCase("no") || (input.equalsIgnoreCase("n"))) {
+                System.out.println("Starting new game.");
+                newGame = true;
+                break;
+            } else {
+                System.out.println("Type \"yes\" or \"no\".");
+            }
+        }
+        round++;
+        return true;
     }
 
-    private void playAgain() {
-        //TODO implement question if new game or not
+    private void chooseBoardSize() {
+        while (true) {
+            try {
+                System.out.println("Choose board size: ");
+                int size = scanner.nextInt();
+                board.setBoardSize(size);
+                scanner.nextLine();
+                break;
+            } catch (Exception e) {
+                scanner.nextLine();
+                System.out.println("Invalid input, try again!");
+            }
+        }
+    }
+
+    private boolean isEvenRound() {
+        return round % 2 == 0;
     }
 
     public Board getBoard() {
