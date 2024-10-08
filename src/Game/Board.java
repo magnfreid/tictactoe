@@ -10,7 +10,6 @@ public class Board {
     public Board() {
         this.boardSize = 3;
         this.playField = new Object[boardSize][boardSize];
-
     }
 
     /**
@@ -96,7 +95,6 @@ public class Board {
             }
         return winner;
     }
-
 
     /**
      * Checks if board is full of markers or not.

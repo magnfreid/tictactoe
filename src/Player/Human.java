@@ -9,6 +9,12 @@ public class Human extends Player {
         super(name, marker);
     }
 
+
+    /**
+     * Ask the player to enter coordinate to where to place marker.
+     * @param board The board that's being played.
+     * @return Returns true if placement is valid.
+     */
     @Override
     public boolean placeMarkerCheckValid(Board board) {
         Scanner scanner = new Scanner(System.in);
@@ -44,7 +50,5 @@ public class Human extends Player {
             System.out.println("x: " + x + " y: " + y + " is already occupied!");
             return false;
         }
-
-
     }
 }

@@ -19,7 +19,8 @@ public class Game {
         this.scanner = new Scanner(System.in);
         this.round = 1;
         this.newGame = true;
-        this.p1 = new Human("Player 1", "X");
+        this.p1 = new Human("Player 1", "✘");
+        this.p2 = null;
     }
 
     /**
@@ -43,10 +44,10 @@ public class Game {
             System.out.println("Play against computer? Type \"yes\" or \"no\".");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
-                p2 = new Bot("BOT", "C");
+                p2 = new Bot("BOT", "⦿");
                 break;
             } else if (input.equalsIgnoreCase("no") || input.equalsIgnoreCase("n")) {
-                p2 = new Human("Player 2", "O");
+                p2 = new Human("Player 2", "●");
                 break;
             }
         }
@@ -98,12 +99,9 @@ public class Game {
             System.out.println("The board is full, it's a draw!");
             return true;
         }
-        while (true) {
+        do {
             board.drawBoard(p1, p2);
-            if (player.placeMarkerCheckValid(board)) {
-                break;
-            }
-        }
+        } while (!player.placeMarkerCheckValid(board));
         if (board.checkWinner(player)) {
             board.drawBoard(p1, p2);
             System.out.println(player.getName() + " is the winner!");
@@ -150,6 +148,10 @@ public class Game {
         return true;
     }
 
+    /**
+     * Asks the player to set a board size between 3 and 9.
+     * Automatically sets to 3 if input is below 3 and 9 if input is above 9.
+     */
     private void chooseBoardSize() {
         while (true) {
             try {

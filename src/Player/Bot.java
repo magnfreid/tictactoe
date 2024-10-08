@@ -12,6 +12,13 @@ public class Bot extends Player {
         this.random = new Random();
     }
 
+
+    /**
+     * Loops until bot finds an empty space to place marker.
+     *
+     * @param board The board that's being played.
+     * @return Returns true when complete.
+     */
     @Override
     public boolean placeMarkerCheckValid(Board board) {
         while (true) {
@@ -21,7 +28,7 @@ public class Bot extends Player {
             position = board.getPlayField()[x][y];
             if (position == null) {
                 board.getPlayField()[x][y] = this;
-                System.out.println(name + " placed a marker on x: " + x+1 + " y: " + y+1);
+                System.out.println(name + " placed a marker on x: " + (x + 1) + " y: " + (y + 1));
                 return true;
             }
         }
