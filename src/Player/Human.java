@@ -12,6 +12,7 @@ public class Human extends Player {
 
     /**
      * Ask the player to enter coordinate to where to place marker.
+     *
      * @param board The board that's being played.
      * @return Returns true if placement is valid.
      */

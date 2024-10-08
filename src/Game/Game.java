@@ -8,10 +8,10 @@ import java.util.Scanner;
 
 public class Game {
     final private Board board;
-    private final Scanner scanner;
+    final private Scanner scanner;
     private int round;
     private boolean newGame;
-    private final Human p1;
+    final private Human p1;
     private Player p2;
 
     public Game() {
@@ -20,7 +20,6 @@ public class Game {
         this.round = 1;
         this.newGame = true;
         this.p1 = new Human("Player 1", "✘");
-        this.p2 = null;
     }
 
     /**
@@ -89,7 +88,7 @@ public class Game {
     }
 
     /**
-     * A single player's turn. Loops until player makes a valid placement. Ends on win or if board is full.
+     * A single player's turn. Loops until player makes a valid placement.
      *
      * @param player The player taking the turn.
      * @return Returns true if board is full or if player wins after placing marker.
