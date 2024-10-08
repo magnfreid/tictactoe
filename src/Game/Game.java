@@ -1,24 +1,25 @@
 package Game;
 
 import Player.Player;
+import Player.Human;
+import Player.Bot;
 
 import java.util.Scanner;
 
 public class Game {
     final private Board board;
-    final private Player p1, p2;
     private final Scanner scanner;
-    private boolean newGame;
     private int round;
+    private boolean newGame;
+    private final Human p1;
+    private Player p2;
 
     public Game() {
         this.board = new Board();
-        this.p1 = board.getPlayer1();
-        this.p2 = board.getPlayer2();
         this.scanner = new Scanner(System.in);
-        this.newGame = true;
         this.round = 1;
-
+        this.newGame = true;
+        this.p1 = new Human("Player 1", "X");
     }
 
     /**
@@ -37,15 +38,28 @@ public class Game {
      * If a new game needs to be set up, with new players.
      */
     private void setup() {
-        p1.setScore(0);
-        p2.setScore(0);
-        round = 1;
         System.out.println("**** TIC-TAC-TOE *****");
+        while (true) {
+            System.out.println("Play against computer? Type \"yes\" or \"no\".");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
+                p2 = new Bot("BOT", "C");
+                break;
+            } else if (input.equalsIgnoreCase("no") || input.equalsIgnoreCase("n")) {
+                p2 = new Human("Player 2", "O");
+                break;
+            }
+        }
         chooseBoardSize();
         System.out.println("Player 1 name: ");
         p1.setName(scanner.nextLine());
-        System.out.println("Player 2 name: ");
-        p2.setName(scanner.nextLine());
+        if (!(p2 instanceof Bot)) {
+            System.out.println("Player 2 name: ");
+            p2.setName(scanner.nextLine());
+        }
+        p1.setScore(0);
+        p2.setScore(0);
+        round = 1;
     }
 
     /**
@@ -85,38 +99,13 @@ public class Game {
             return true;
         }
         while (true) {
-            int x;
-            int y;
-            while (true) {
-                try {
-                    board.drawBoard();
-                    System.out.println(player.getName() + ", where do you want to place your marker? " + "(" + player.getMarker() + ")");
-                    System.out.println("x:");
-                    x = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.println("y:");
-                    y = scanner.nextInt();
-                    scanner.nextLine();
-                    break;
-                } catch (Exception e) {
-                    scanner.nextLine();
-                    System.out.println("Invalid input, try again!");
-                }
-            }
-
-            try {
-                if (player.placeMarkerCheckValid(board, x, y)) {
-                    System.out.println(player.getName() + " placed a marker on x: " + x + " y: " + y);
-                    break;
-                } else {
-                    System.out.println("x: " + x + " y: " + y + " is already occupied!");
-                }
-            } catch (RuntimeException e) {
-                System.out.println("You cannot place a marker on x: " + x + " y: " + y + " because it is not on the board! Try again.");
+            board.drawBoard(p1, p2);
+            if (player.placeMarkerCheckValid(board)) {
+                break;
             }
         }
         if (board.checkWinner(player)) {
-            board.drawBoard();
+            board.drawBoard(p1, p2);
             System.out.println(player.getName() + " is the winner!");
             player.setScore(player.getScore() + 1);
             return true;

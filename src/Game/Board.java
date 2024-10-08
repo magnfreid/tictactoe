@@ -6,30 +6,27 @@ import Player.Player;
 public class Board {
     private int boardSize;
     private Object[][] playField;
-    private final Player player1, player2;
 
     public Board() {
         this.boardSize = 3;
         this.playField = new Object[boardSize][boardSize];
-        this.player1 = new Player("Player 1", "✘") {
-        };
-        this.player2 = new Player("Player 2", "●");
+
     }
 
     /**
      * Prints the board in the terminal.
      */
-    public void drawBoard() {
+    public void drawBoard(Player p1, Player p2) {
         System.out.println("𝒚");
         for (int y = boardSize - 1; y >= 0; y--) {
             System.out.print(y + 1 + " ");
             for (int x = 0; x < boardSize; x++) {
                 Object position = playField[x][y];
                 String draw;
-                if (position == player1) {
-                    draw = player1.getMarker();
-                } else if (position == player2) {
-                    draw = player2.getMarker();
+                if (position == p1) {
+                    draw = p1.getMarker();
+                } else if (position == p2) {
+                    draw = p2.getMarker();
                 } else {
                     draw = "_";
                 }
@@ -107,9 +104,9 @@ public class Board {
      * @return Returns true if there's no space left on the board.
      */
     public boolean checkIfBoardIsFull() {
-        for (Object[] row : playField) {
-            for (Object position : row) {
-                if (position == null) {
+        for (Object[] array : playField) {
+            for (Object element : array) {
+                if (element == null) {
                     return false;
                 }
             }
@@ -126,11 +123,7 @@ public class Board {
         return playField;
     }
 
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    public Player getPlayer2() {
-        return player2;
+    public int getBoardSize() {
+        return boardSize;
     }
 }
