@@ -2,7 +2,7 @@ package Player;
 
 import Game.Board;
 
-import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Bot extends Player {
@@ -38,11 +38,17 @@ public class Bot extends Player {
         }
     }
 
-
+ /*
+ * Takes the best coordinates and stores in ArrayList. Checks each coordinate and places it if possible. In order of column -> row -> diagnal -> anti-diagonal.
+ * */
     public boolean bestPlacementPositionFound(Board board) {
         int boardSize = board.getBoardSize();
         Object[][] grid = board.getGrid();
-        int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+        int[] columnCoordinates = new int[4];
+        int[] rowCoordinates = new int[4];
+        int[] diagonalCoordinates = new int[4];
+        int[] antiDiagonalCoordinates = new int[4];
+        ArrayList<int[]> allCoordinates = new ArrayList<>();
         int bestInRow = 0;
         //Column
         for (int x = 0; x < boardSize; x++) {
@@ -52,20 +58,18 @@ public class Bot extends Player {
                     markerInRow = 0;
                 } else {
                     markerInRow++;
-                    if (markerInRow >= bestInRow) {
+                    if (markerInRow > bestInRow) {
+                        System.out.println("Checking: COLUMN");
                         bestInRow = markerInRow;
                         //Coordinates for inserting above and below column
-                        x1 = x;
-                        y1 = y + 1;
-                        x2 = x;
-                        y2 = y - bestInRow;
+                        columnCoordinates[0] = x;
+                        columnCoordinates[1] = y + 1;
+                        columnCoordinates[2] = x;
+                        columnCoordinates[3] = y - bestInRow;
+                        allCoordinates.add(columnCoordinates);
                     }
                 }
             }
-        }
-        if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
-            System.out.println("COLUMN");
-            return true;
         }
         //Row
         bestInRow = 0;
@@ -76,20 +80,18 @@ public class Bot extends Player {
                     markerInRow = 0;
                 } else {
                     markerInRow++;
-                    if (markerInRow >= bestInRow) {
+                    if (markerInRow > bestInRow) {
+                        System.out.println("Checking: ROW");
                         bestInRow = markerInRow;
                         //Coordinates for inserting left and right of row
-                        x1 = x + 1;
-                        y1 = y;
-                        x2 = x - bestInRow;
-                        y2 = y;
+                        rowCoordinates[0] = x + 1;
+                        rowCoordinates[1] = y;
+                        rowCoordinates[2] = x - bestInRow;
+                        rowCoordinates[3] = y;
+                        allCoordinates.add(rowCoordinates);
                     }
                 }
             }
-        }
-        if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
-            System.out.println("ROW");
-            return true;
         }
         //Diagonal
         bestInRow = 0;
@@ -99,19 +101,17 @@ public class Bot extends Player {
                 markerInRow = 0;
             } else {
                 markerInRow++;
-                if (markerInRow >= bestInRow) {
+                if (markerInRow > bestInRow) {
+                    System.out.println("Checking: DIAGONAL");
                     bestInRow = markerInRow;
                     //Coordinates for inserting upper right corner and lower left corner of diagonal
-                    x1 = i + 1;
-                    y1 = i + 1;
-                    x2 = i - bestInRow;
-                    y2 = i - bestInRow;
+                    diagonalCoordinates[0] = i + 1;
+                    diagonalCoordinates[1] = i + 1;
+                    diagonalCoordinates[2] = i - bestInRow;
+                    diagonalCoordinates[3] = i - bestInRow;
+                    allCoordinates.add(diagonalCoordinates);
                 }
             }
-        }
-        if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
-            System.out.println("DIAGONAL");
-            return true;
         }
         bestInRow = 0;
         markerInRow = 0;
@@ -120,39 +120,54 @@ public class Bot extends Player {
                 markerInRow = 0;
             } else {
                 markerInRow++;
-                if (markerInRow >= bestInRow) {
+                if (markerInRow > bestInRow) {
+                    System.out.println("Checking: ANTI-DIAGONAL");
                     bestInRow = markerInRow;
                     //Coordinates for inserting upper left corner and lower right corner of diagonal
-                    x1 = i - 1;
-                    y1 = i + 1;
-                    x2 = i + bestInRow;
-                    y2 = i + bestInRow;
+                    antiDiagonalCoordinates[0] = i - 1;
+                    antiDiagonalCoordinates[1] = i + 1;
+                    antiDiagonalCoordinates[2] = i + bestInRow;
+                    antiDiagonalCoordinates[3] = i + bestInRow;
+                    allCoordinates.add(antiDiagonalCoordinates);
                 }
             }
-       if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
-           System.out.println("ANTI-DIAGONAL");
-           return  true;
-       }
-       else  {
-           System.out.println("NO BEST PLACEMENT FOUND");
-           return  false;
-       }
+        if (tryPlaceMarker(grid, allCoordinates)) {
+            System.out.println("PLACEMENT FOUND");
+            return true;
+        } else {
+            System.out.println("NO BEST PLACEMENT FOUND");
+            return false;
+        }
     }
 
-    private boolean tryPlaceMarker(Object[][] grid, int x1, int y1, int x2, int y2) {
-        try {
-            if (grid[x1][y1] == null) {
-                grid[x1][y1] = this;
-                System.out.println(name + " placed a marker on x: " + (x1 + 1) + " y: " + (y1 + 1));
-                return true;
-                //TODO BUG: else if does not happen on exception
-            } else if (grid[x2][y2] == null) {
-                grid[x2][y2] = this;
-                System.out.println(name + " placed a marker on x: " + (x2 + 1) + " y: " + (y2 + 1));
-                return true;
+    private boolean tryPlaceMarker(Object[][] grid, ArrayList<int[]> coordinates) {
+        int index = 0;
+        for (int[] coordinate : coordinates) {
+            index++;
+            System.out.println("TRY: " + index);
+            int x1 = coordinate[0];
+            int y1 = coordinate[1];
+            int x2 = coordinate[2];
+            int y2 = coordinate[3];
+            //TODO Debug the try/catches, rarely seems to go to the second one.
+            try {
+                if (grid[x1][y1] == null) {
+                    grid[coordinate[0]][coordinate[1]] = this;
+                    System.out.println(name + " placed a marker on x: " + (x1 + 1) + " y: " + (y1 + 1));
+                    return true;
+                }
+            } catch (Exception e) {
+                System.out.println("BOT is thinking...");
             }
-        } catch (Exception e) {
-            return false;
+            try {
+                if (grid[x2][y2] == null) {
+                    grid[x2][y2] = this;
+                    System.out.println(name + " placed a marker on x: " + (x2 + 1) + " y: " + (y2 + 1));
+                    return true;
+                }
+            } catch (Exception e) {
+                System.out.println("BOT is thinking some more...");
+            }
         }
         return false;
     }
