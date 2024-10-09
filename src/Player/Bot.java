@@ -2,6 +2,7 @@ package Player;
 
 import Game.Board;
 
+import java.sql.SQLOutput;
 import java.util.Random;
 
 public class Bot extends Player {
@@ -21,8 +22,7 @@ public class Bot extends Player {
      */
     @Override
     public boolean placeMarkerCheckValid(Board board) {
-        boolean bestPlacementFound = bestPlacementPositionFound(board);
-        if (bestPlacementFound) {
+        if (bestPlacementPositionFound(board)) {
             return true;
         } else {
             while (true) {
@@ -52,7 +52,7 @@ public class Bot extends Player {
                     markerInRow = 0;
                 } else {
                     markerInRow++;
-                    if (markerInRow > bestInRow) {
+                    if (markerInRow >= bestInRow) {
                         bestInRow = markerInRow;
                         //Coordinates for inserting above and below column
                         x1 = x;
@@ -64,6 +64,7 @@ public class Bot extends Player {
             }
         }
         if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
+            System.out.println("COLUMN");
             return true;
         }
         //Row
@@ -75,7 +76,7 @@ public class Bot extends Player {
                     markerInRow = 0;
                 } else {
                     markerInRow++;
-                    if (markerInRow > bestInRow) {
+                    if (markerInRow >= bestInRow) {
                         bestInRow = markerInRow;
                         //Coordinates for inserting left and right of row
                         x1 = x + 1;
@@ -87,6 +88,7 @@ public class Bot extends Player {
             }
         }
         if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
+            System.out.println("ROW");
             return true;
         }
         //Diagonal
@@ -97,7 +99,7 @@ public class Bot extends Player {
                 markerInRow = 0;
             } else {
                 markerInRow++;
-                if (markerInRow > bestInRow) {
+                if (markerInRow >= bestInRow) {
                     bestInRow = markerInRow;
                     //Coordinates for inserting upper right corner and lower left corner of diagonal
                     x1 = i + 1;
@@ -108,6 +110,7 @@ public class Bot extends Player {
             }
         }
         if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
+            System.out.println("DIAGONAL");
             return true;
         }
         bestInRow = 0;
@@ -117,7 +120,7 @@ public class Bot extends Player {
                 markerInRow = 0;
             } else {
                 markerInRow++;
-                if (markerInRow > bestInRow) {
+                if (markerInRow >= bestInRow) {
                     bestInRow = markerInRow;
                     //Coordinates for inserting upper left corner and lower right corner of diagonal
                     x1 = i - 1;
@@ -126,7 +129,14 @@ public class Bot extends Player {
                     y2 = i + bestInRow;
                 }
             }
-        return tryPlaceMarker(grid, x1, y1, x2, y2);
+       if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
+           System.out.println("ANTI-DIAGONAL");
+           return  true;
+       }
+       else  {
+           System.out.println("NO BEST PLACEMENT FOUND");
+           return  false;
+       }
     }
 
     private boolean tryPlaceMarker(Object[][] grid, int x1, int y1, int x2, int y2) {
@@ -134,13 +144,16 @@ public class Bot extends Player {
             if (grid[x1][y1] == null) {
                 grid[x1][y1] = this;
                 System.out.println(name + " placed a marker on x: " + (x1 + 1) + " y: " + (y1 + 1));
+                return true;
+                //TODO BUG: else if does not happen on exception
             } else if (grid[x2][y2] == null) {
                 grid[x2][y2] = this;
                 System.out.println(name + " placed a marker on x: " + (x2 + 1) + " y: " + (y2 + 1));
+                return true;
             }
-            return true;
         } catch (Exception e) {
             return false;
         }
+        return false;
     }
 }
