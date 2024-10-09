@@ -120,9 +120,9 @@ public class Game {
         System.out.println("Play again?");
         while (true) {
             String input = scanner.nextLine();
-            if (input.equalsIgnoreCase("yes") || (input.equalsIgnoreCase("y"))) {
+            if (input.trim().equalsIgnoreCase("yes") || (input.trim().equalsIgnoreCase("y"))) {
                 break;
-            } else if (input.equalsIgnoreCase("no") || (input.equalsIgnoreCase("n"))) {
+            } else if (input.trim().equalsIgnoreCase("no") || (input.trim().equalsIgnoreCase("n"))) {
                 System.out.println("Exiting...");
                 return false;
             } else {
@@ -136,7 +136,7 @@ public class Game {
                 newGame = false;
                 round++;
                 break;
-            } else if (input.equalsIgnoreCase("no") || (input.equalsIgnoreCase("n"))) {
+            } else if (input.trim().equalsIgnoreCase("no") || (input.trim().equalsIgnoreCase("n"))) {
                 System.out.println("Starting new game.");
                 newGame = true;
                 break;

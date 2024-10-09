@@ -38,13 +38,13 @@ public class Human extends Player {
         }
         Object position;
         try {
-            position = board.getPlayField()[x - 1][y - 1];
+            position = board.getGrid()[x - 1][y - 1];
         } catch (Exception e) {
             System.out.println("You cannot place a marker on x: " + x + " y: " + y + " because it is not on the board! Try again.");
             return false;
         }
         if (position == null) {
-            board.getPlayField()[x - 1][y - 1] = this;
+            board.getGrid()[x - 1][y - 1] = this;
             System.out.println(name + " placed a marker on x: " + x + " y: " + y);
             return true;
         } else {
