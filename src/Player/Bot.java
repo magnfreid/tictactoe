@@ -38,11 +38,13 @@ public class Bot extends Player {
         }
     }
 
-    //Try to find the row/column/diagonal with most markers in a row
+
     public boolean bestPlacementPositionFound(Board board) {
         int boardSize = board.getBoardSize();
         Object[][] grid = board.getGrid();
-        int bestMarkerInRow = 0;
+        int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+        int bestInRow = 0;
+        //Column
         for (int x = 0; x < boardSize; x++) {
             int markerInRow = 0;
             for (int y = 0; y < boardSize; y++) {
@@ -50,55 +52,95 @@ public class Bot extends Player {
                     markerInRow = 0;
                 } else {
                     markerInRow++;
-                    //Extract the column with the highest nr of markers in a row
-                    if (markerInRow > bestMarkerInRow) {
-                        bestMarkerInRow = markerInRow;
-                        //Check if the position above the column is open for placement or not
-                        if (grid[x][y + 1] == null) {
-                            grid[x][y + 1] = this;
-                            return true;
-                        }
-                        //Same for the position below the column
-                        else if (grid[x][y - bestMarkerInRow] == null) {
-                            grid[x][y - bestMarkerInRow] = this;
-                            return true;
-                        }
+                    if (markerInRow > bestInRow) {
+                        bestInRow = markerInRow;
+                        //Coordinates for inserting above and below column
+                        x1 = x;
+                        y1 = y + 1;
+                        x2 = x;
+                        y2 = y - bestInRow;
                     }
                 }
             }
         }
-        return false;
-        /*//Checks rows
-        for (int y = 0; y < boardSize; y++) {
-            winner = true;
-            for (int x = 0; x < boardSize; x++) {
-                if (grid[x][y] != this) {
-                    winner = false;
-                    break;
-                }
-            }
-            if (winner) {
-                return true;
-            }
-        }
-        //Checks diagonal
-        winner = true;
-        for (int i = 0; i < boardSize; i++) {
-            if (grid[i][i] != this) {
-                winner = false;
-                break;
-            }
-        }
-        if (winner) {
+        if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
             return true;
         }
-        //Checks anti-diagonal
-        winner = true;
+        //Row
+        bestInRow = 0;
+        for (int y = 0; y < boardSize; y++) {
+            int markerInRow = 0;
+            for (int x = 0; x < boardSize; x++) {
+                if (grid[x][y] != this) {
+                    markerInRow = 0;
+                } else {
+                    markerInRow++;
+                    if (markerInRow > bestInRow) {
+                        bestInRow = markerInRow;
+                        //Coordinates for inserting left and right of row
+                        x1 = x + 1;
+                        y1 = y;
+                        x2 = x - bestInRow;
+                        y2 = y;
+                    }
+                }
+            }
+        }
+        if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
+            return true;
+        }
+        //Diagonal
+        bestInRow = 0;
+        int markerInRow = 0;
+        for (int i = 0; i < boardSize; i++) {
+            if (grid[i][i] != this) {
+                markerInRow = 0;
+            } else {
+                markerInRow++;
+                if (markerInRow > bestInRow) {
+                    bestInRow = markerInRow;
+                    //Coordinates for inserting upper right corner and lower left corner of diagonal
+                    x1 = i + 1;
+                    y1 = i + 1;
+                    x2 = i - bestInRow;
+                    y2 = i - bestInRow;
+                }
+            }
+        }
+        if (tryPlaceMarker(grid, x1, y1, x2, y2)) {
+            return true;
+        }
+        bestInRow = 0;
+        markerInRow = 0;
         for (int i = 0; i < boardSize; i++)
             if (grid[i][boardSize - 1 - i] != this) {
-                winner = false;
-                break;
+                markerInRow = 0;
+            } else {
+                markerInRow++;
+                if (markerInRow > bestInRow) {
+                    bestInRow = markerInRow;
+                    //Coordinates for inserting upper left corner and lower right corner of diagonal
+                    x1 = i - 1;
+                    y1 = i + 1;
+                    x2 = i + bestInRow;
+                    y2 = i + bestInRow;
+                }
             }
-        return winner;*/
+        return tryPlaceMarker(grid, x1, y1, x2, y2);
+    }
+
+    private boolean tryPlaceMarker(Object[][] grid, int x1, int y1, int x2, int y2) {
+        try {
+            if (grid[x1][y1] == null) {
+                grid[x1][y1] = this;
+                System.out.println(name + " placed a marker on x: " + (x1 + 1) + " y: " + (y1 + 1));
+            } else if (grid[x2][y2] == null) {
+                grid[x2][y2] = this;
+                System.out.println(name + " placed a marker on x: " + (x2 + 1) + " y: " + (y2 + 1));
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
