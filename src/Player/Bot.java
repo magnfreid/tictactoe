@@ -21,25 +21,28 @@ public class Bot extends Player {
      */
     @Override
     public boolean placeMarkerCheckValid(Board board) {
-        while (true) {
-            int x = random.nextInt(0, board.getBoardSize());
-            int y = random.nextInt(0, board.getBoardSize());
-            Object position = board.getGrid()[x][y];
-            if (position == null) {
-                board.getGrid()[x][y] = this;
-                System.out.println(name + " placed a marker on x: " + (x + 1) + " y: " + (y + 1));
-                return true;
+        boolean bestPlacementFound = bestPlacementPositionFound(board);
+        if (bestPlacementFound) {
+            return true;
+        } else {
+            while (true) {
+                int x = random.nextInt(0, board.getBoardSize());
+                int y = random.nextInt(0, board.getBoardSize());
+                Object position = board.getGrid()[x][y];
+                if (position == null) {
+                    board.getGrid()[x][y] = this;
+                    System.out.println(name + " placed a marker on x: " + (x + 1) + " y: " + (y + 1));
+                    return true;
+                }
             }
         }
     }
 
     //Try to find the row/column/diagonal with most markers in a row
-    public Object bestMarkerPosition(Board board) {
+    public boolean bestPlacementPositionFound(Board board) {
         int boardSize = board.getBoardSize();
         Object[][] grid = board.getGrid();
-        Object markerPlacement = null;
         int bestMarkerInRow = 0;
-
         for (int x = 0; x < boardSize; x++) {
             int markerInRow = 0;
             for (int y = 0; y < boardSize; y++) {
@@ -51,18 +54,20 @@ public class Bot extends Player {
                     if (markerInRow > bestMarkerInRow) {
                         bestMarkerInRow = markerInRow;
                         //Check if the position above the column is open for placement or not
-                        if(grid[x][y + 1] == null) {
-                            markerPlacement = grid[x][y+1];
+                        if (grid[x][y + 1] == null) {
+                            grid[x][y + 1] = this;
+                            return true;
                         }
                         //Same for the position below the column
-                        else if (grid[x][y-bestMarkerInRow] == null) {
-                            markerPlacement = grid[x][y-bestMarkerInRow];
+                        else if (grid[x][y - bestMarkerInRow] == null) {
+                            grid[x][y - bestMarkerInRow] = this;
+                            return true;
                         }
                     }
                 }
             }
         }
-        return markerPlacement;
+        return false;
         /*//Checks rows
         for (int y = 0; y < boardSize; y++) {
             winner = true;
