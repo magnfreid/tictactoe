@@ -24,7 +24,8 @@ public class Bot extends Player {
      */
     @Override
     public boolean placeMarkerCheckValid(Board board) {
-        if (bestPlacementPositionFound(board)) {
+        //TODO Add logic to first check if opponent is about to win?
+        if (smartPositionFound(board)) {
             return true;
         } else {
             while (true) {
@@ -45,9 +46,10 @@ public class Bot extends Player {
      * @param board The board being played on.
      * @return Returns true if a smart placement is found.
      */
-    public boolean bestPlacementPositionFound(Board board) {
+    public boolean smartPositionFound(Board board) {
         int boardSize = board.getBoardSize();
         Object[][] grid = board.getGrid();
+        //TODO reuse the same int array? Make coordinate couples and sequence length into new class?
         int[] columnCoordinates = new int[5];
         int[] rowCoordinates = new int[5];
         int[] diagonalCoordinates = new int[5];
@@ -66,6 +68,7 @@ public class Bot extends Player {
                         System.out.println("Checking: COLUMN");
                         highestInSequence = inSequence;
                         //Coordinates for inserting above and below column
+                        //TODO Simplify these
                         columnCoordinates[0] = x;
                         columnCoordinates[1] = y + 1;
                         columnCoordinates[2] = x;
