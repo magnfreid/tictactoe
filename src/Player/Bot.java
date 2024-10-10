@@ -15,6 +15,8 @@ public class Bot extends Player {
         this.random = new Random();
     }
 
+    //!!!!!! CAPS println() are for testing purposes only !!!!!!!!
+
     private static class CoordinatePair {
         int x1, y1, x2, y2, sequence;
         boolean hasClearPath;
@@ -36,6 +38,7 @@ public class Bot extends Player {
 
     /**
      * Loops until bot finds an empty space to place marker.
+     * Priority: Try to block opponent from winning > Try to continue building on the longest line > Place at random coordinate.
      *
      * @param board The board that's being played.
      * @return Returns true when complete.
@@ -62,7 +65,9 @@ public class Bot extends Player {
     }
 
     /**
-     * Tries to block opponent from winning by placing a marker at the end of opponents row. Only works if opponent has formed an adjacent line.
+     * Checks if opponent has a line of adjacent markers that is 1 off from filling the
+     * line and winning the game then tries to fill that space.
+     * Currently only works if the last, empty spot is at the edge of the game board.
      *
      * @param board The board that is being played.
      * @return Returns true if it finds a place to block and places a marker.
@@ -72,7 +77,7 @@ public class Bot extends Player {
         int boardSize = board.getBoardSize();
         int opponentColumn;
         int opponentRow;
-        ArrayList<CoordinatePair> coordinatesToCheck = new ArrayList<>();
+        ArrayList<CoordinatePair> coordinatesToTry = new ArrayList<>();
         //Rows and Columns
         for (int i = 0; i < boardSize; i++) {
             opponentColumn = 0;
@@ -84,7 +89,7 @@ public class Bot extends Player {
                     opponentColumn++;
                     if (opponentColumn == boardSize - 1) {
                         System.out.println("BLOCKING: COLUMN");
-                        coordinatesToCheck.add(new CoordinatePair(i, j + 1, i, j - opponentColumn, 0, true));
+                        coordinatesToTry.add(new CoordinatePair(i, j + 1, i, j - opponentColumn, 0, true));
                     }
                 }
                 if (grid[j][i] == null || grid[j][i] == this) {
@@ -93,7 +98,7 @@ public class Bot extends Player {
                     opponentRow++;
                     if (opponentRow == boardSize - 1) {
                         System.out.println("BLOCKING: ROW");
-                        coordinatesToCheck.add(new CoordinatePair(j + 1, i, j - opponentRow, i, 0, true));
+                        coordinatesToTry.add(new CoordinatePair(j + 1, i, j - opponentRow, i, 0, true));
                     }
                 }
 
@@ -109,7 +114,7 @@ public class Bot extends Player {
                 opponentDiagonal++;
                 if (opponentDiagonal == boardSize - 1) {
                     System.out.println("BLOCKING: DIAGONAL");
-                    coordinatesToCheck.add(new CoordinatePair(i + 1, i + 1, i - opponentDiagonal, i - opponentDiagonal, 0, true));
+                    coordinatesToTry.add(new CoordinatePair(i + 1, i + 1, i - opponentDiagonal, i - opponentDiagonal, 0, true));
                 }
             }
             if (grid[i][boardSize - 1 - i] == null || grid[i][boardSize - 1 - i] == this) {
@@ -118,15 +123,16 @@ public class Bot extends Player {
                 opponentAntiDiagonal++;
                 if (opponentAntiDiagonal == boardSize - 1) {
                     System.out.println("BLOCKING: ANTI-DIAGONAL");
-                    coordinatesToCheck.add(new CoordinatePair(i + 1, i - 1, i - opponentAntiDiagonal, i + opponentAntiDiagonal, 0, true));
+                    coordinatesToTry.add(new CoordinatePair(i + 1, i - 1, i - opponentAntiDiagonal, i + opponentAntiDiagonal, 0, true));
                 }
             }
         }
-        return (tryPlaceMarker(board, coordinatesToCheck));
+        return (tryPlaceMarker(board, coordinatesToTry));
     }
 
     /**
-     * Stores the coordinates with the best sequence length of each direction. Also checks if path ahead is clear.
+     * Checks all directions and collects the best coordinates (with the longest sequence and a clear path)
+     * and tries to place marker at the longest sequence possible.
      *
      * @param board The board being played on.
      * @return Returns true if a smart placement is found.
@@ -233,7 +239,7 @@ public class Bot extends Player {
     }
 
     /**
-     * Sorts the coordinates passed to it by sequence length. Tries coordinates with a clear path based on sequence length.
+     * Sorts the coordinates passed to it by sequence length. Tries coordinates with a clear path based on highest sequence length.
      *
      * @param board       The board being played on.
      * @param coordinates A list of potential coordinates to try.
@@ -249,21 +255,20 @@ public class Bot extends Player {
             if (cP.hasClearPath) {
                 index++;
                 System.out.println("TRY: " + index);
-                if (isValidPlacement(board, cP.x1, cP.y1) && grid[cP.x1][cP.y1] == null)
-                {
-                        grid[cP.x1][cP.y1] = this;
-                        System.out.println(name + " placed a marker on x: " + (cP.x1 + 1) + " y: " + (cP.y1 + 1));
-                        return true;
-                    }
-                System.out.println("Bot is thinking...");
-                    if (isValidPlacement(board, cP.x2, cP.y2) && grid[cP.x2][cP.y2] == null) {
-                        grid[cP.x2][cP.y2] = this;
-                        System.out.println(name + " placed a marker on x: " + (cP.x2 + 1) + " y: " + (cP.y2 + 1));
-                        return true;
-                    }
-                    System.out.println("BOT is thinking some more...");
+                if (isValidPlacement(board, cP.x1, cP.y1) && grid[cP.x1][cP.y1] == null) {
+                    grid[cP.x1][cP.y1] = this;
+                    System.out.println(name + " placed a marker on x: " + (cP.x1 + 1) + " y: " + (cP.y1 + 1));
+                    return true;
                 }
+                System.out.println("Bot is thinking...");
+                if (isValidPlacement(board, cP.x2, cP.y2) && grid[cP.x2][cP.y2] == null) {
+                    grid[cP.x2][cP.y2] = this;
+                    System.out.println(name + " placed a marker on x: " + (cP.x2 + 1) + " y: " + (cP.y2 + 1));
+                    return true;
+                }
+                System.out.println("BOT is thinking some more...");
             }
+        }
         return false;
     }
 
