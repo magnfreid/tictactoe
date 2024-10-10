@@ -41,7 +41,6 @@ public class Bot extends Player {
      */
     @Override
     public boolean placeMarkerCheckValid(Board board) {
-        //TODO Add logic to first check if opponent is about to win?
         if (blockEnemyWin(board)) {
             return true;
         }
