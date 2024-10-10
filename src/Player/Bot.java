@@ -122,7 +122,7 @@ public class Bot extends Player {
                 }
             }
         }
-        return (tryPlaceMarker(grid, coordinatesToCheck));
+        return (tryPlaceMarker(board, coordinatesToCheck));
     }
 
     /**
@@ -223,7 +223,7 @@ public class Bot extends Player {
                     coordinatesToCheck.add(coordinatePair);
                 }
             }
-        if (tryPlaceMarker(grid, coordinatesToCheck)) {
+        if (tryPlaceMarker(board, coordinatesToCheck)) {
             System.out.println("PLACEMENT FOUND");
             return true;
         } else {
@@ -235,11 +235,12 @@ public class Bot extends Player {
     /**
      * Sorts the coordinates passed to it by sequence length. Tries coordinates with a clear path based on sequence length.
      *
-     * @param grid        The grid being played on.
+     * @param board       The board being played on.
      * @param coordinates A list of potential coordinates to try.
      * @return Returns true if any of the given coordinates can be placed on the board.
      */
-    private boolean tryPlaceMarker(Object[][] grid, ArrayList<CoordinatePair> coordinates) {
+    private boolean tryPlaceMarker(Board board, ArrayList<CoordinatePair> coordinates) {
+        Object[][] grid = board.getGrid();
         int index = 0;
         coordinates.sort(Comparator.comparingInt(CoordinatePair::getSequence));
         Collections.reverse(coordinates);
@@ -248,26 +249,25 @@ public class Bot extends Player {
             if (cP.hasClearPath) {
                 index++;
                 System.out.println("TRY: " + index);
-                try {
-                    if (grid[cP.x1][cP.y1] == null) {
+                if (isValidPlacement(board, cP.x1, cP.y1) && grid[cP.x1][cP.y1] == null)
+                {
                         grid[cP.x1][cP.y1] = this;
                         System.out.println(name + " placed a marker on x: " + (cP.x1 + 1) + " y: " + (cP.y1 + 1));
                         return true;
                     }
-                } catch (Exception e) {
-                    System.out.println("BOT is thinking...");
-                }
-                try {
-                    if (grid[cP.x2][cP.y2] == null) {
+                System.out.println("Bot is thinking...");
+                    if (isValidPlacement(board, cP.x2, cP.y2) && grid[cP.x2][cP.y2] == null) {
                         grid[cP.x2][cP.y2] = this;
                         System.out.println(name + " placed a marker on x: " + (cP.x2 + 1) + " y: " + (cP.y2 + 1));
                         return true;
                     }
-                } catch (Exception e) {
                     System.out.println("BOT is thinking some more...");
                 }
             }
-        }
         return false;
+    }
+
+    private boolean isValidPlacement(Board board, int x, int y) {
+        return (x >= 0 && x < board.getBoardSize()) && (y >= 0 && y < board.getBoardSize());
     }
 }
