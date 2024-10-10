@@ -15,15 +15,15 @@ public class Bot extends Player {
         this.random = new Random();
     }
 
-    private static class CoordinatePair{
+    private static class CoordinatePair {
         int x1, y1, x2, y2, sequence;
         boolean hasClearPath;
 
-        public CoordinatePair(int x1, int y1, int x2, int xy, int sequence, boolean hasClearPath) {
+        public CoordinatePair(int x1, int y1, int x2, int y2, int sequence, boolean hasClearPath) {
             this.x1 = x1;
             this.y1 = y1;
             this.x2 = x2;
-            this.y2 = xy;
+            this.y2 = y2;
             this.sequence = sequence;
             this.hasClearPath = hasClearPath;
         }
@@ -43,7 +43,10 @@ public class Bot extends Player {
     @Override
     public boolean placeMarkerCheckValid(Board board) {
         //TODO Add logic to first check if opponent is about to win?
-        if (smartPositionFound(board)) {
+        if (blockEnemyWin(board)) {
+            return true;
+        }
+        else if (smartPositionFound(board)) {
             return true;
         } else {
             while (true) {
@@ -60,8 +63,67 @@ public class Bot extends Player {
         }
     }
 
+    public boolean blockEnemyWin(Board board) {
+        Object[][] grid = board.getGrid();
+        int boardSize = board.getBoardSize();
+        int opponentColumn;
+        int opponentRow;
+        ArrayList<CoordinatePair> coordinatePairsToCheck = new ArrayList<>();
+        //Rows and Columns
+        for (int i = 0; i < boardSize; i++) {
+            opponentColumn = 0;
+            opponentRow = 0;
+            for (int j = 0; j < boardSize; j++) {
+                if (grid[i][j] == null || grid[i][j] == this) {
+                    opponentColumn = 0;
+                } else {
+                    opponentColumn++;
+                    if (opponentColumn == boardSize - 1) {
+                        System.out.println("BLOCKING: COLUMN");
+                        coordinatePairsToCheck.add(new CoordinatePair(i, j + 1, i, j - opponentColumn, 0, true));
+                    }
+                }
+                if (grid[j][i] == null || grid[j][i] == this) {
+                    opponentRow = 0;
+                } else {
+                    opponentRow++;
+                    if (opponentColumn == boardSize - 1) {
+                        System.out.println("BLOCKING: ROW");
+                        coordinatePairsToCheck.add(new CoordinatePair(i + 1, j, i - opponentRow, j, 0, true));
+                    }
+                }
+
+            }
+        }
+        //Diagonal and anti-diagonal
+        int opponentDiagonal = 0;
+        int opponentAntiDiagonal = 0;
+        for (int i = 0; i < boardSize; i++) {
+            if (grid[i][i] == null || grid[i][i] == this) {
+                opponentDiagonal = 0;
+            } else {
+                opponentDiagonal++;
+                if (opponentDiagonal == boardSize - 1) {
+                    System.out.println("BLOCKING: DIAGONAL");
+                    coordinatePairsToCheck.add(new CoordinatePair(i + 1, i + 1, i - opponentDiagonal, i - opponentDiagonal, 0, true));
+                }
+            }
+            if (grid[i][boardSize - 1 - i] == null || grid[i][boardSize - 1 - i] == this) {
+                opponentAntiDiagonal = 0;
+            } else {
+                opponentAntiDiagonal++;
+                if (opponentAntiDiagonal == boardSize - 1) {
+                    System.out.println("BLOCKING: ANTI-DIAGONAL");
+                    coordinatePairsToCheck.add(new CoordinatePair(i + 1, i - 1, i - 1, i + 1, 0, true));
+                }
+            }
+        }
+        return (tryPlaceMarker(grid, coordinatePairsToCheck));
+    }
+
     /**
-     * Stores the coordinates with the best sequence length of each direction
+     * Stores the coordinates with the best sequence length of each direction. Also checks if path ahead is clear.
+     *
      * @param board The board being played on.
      * @return Returns true if a smart placement is found.
      */
@@ -76,10 +138,10 @@ public class Bot extends Player {
             int inSequence = 0;
             hasClearPath = true;
             for (int y = 0; y < boardSize; y++) {
-                if (grid[x][y] instanceof Human) {
-                    hasClearPath = false;
-                }
                 if (grid[x][y] != this) {
+                    if (grid[x][y] != null) {
+                        hasClearPath = false;
+                    }
                     inSequence = 0;
                 } else {
                     inSequence++;
@@ -99,10 +161,10 @@ public class Bot extends Player {
             int inSequence = 0;
             hasClearPath = true;
             for (int x = 0; x < boardSize; x++) {
-                if (grid[x][y] instanceof Human) {
-                    hasClearPath = false;
-                }
                 if (grid[x][y] != this) {
+                    if (grid[x][y] != null) {
+                        hasClearPath = false;
+                    }
                     inSequence = 0;
                 } else {
                     inSequence++;
@@ -121,10 +183,10 @@ public class Bot extends Player {
         int inSequence = 0;
         hasClearPath = true;
         for (int i = 0; i < boardSize; i++) {
-            if (grid[i][i] instanceof Human) {
-                hasClearPath = false;
-            }
             if (grid[i][i] != this) {
+                if (grid[i][i] != null) {
+                    hasClearPath = false;
+                }
                 inSequence = 0;
             } else {
                 inSequence++;
@@ -143,7 +205,7 @@ public class Bot extends Player {
         hasClearPath = true;
         for (int i = 0; i < boardSize; i++)
             if (grid[i][boardSize - 1 - i] != this) {
-                if (grid[i][boardSize-1-i] instanceof Human) {
+                if (grid[i][boardSize - 1 - i] != null) {
                     hasClearPath = false;
                 }
                 inSequence = 0;
@@ -167,8 +229,9 @@ public class Bot extends Player {
     }
 
     /**
-     * Sorts the coordinates passed to it by sequence length (index 4). Tries the coordinate with the highest sequence first.
-     * @param grid The grid being played on.
+     * Sorts the coordinates passed to it by sequence length. Tries coordinates with a clear path based on sequence length.
+     *
+     * @param grid        The grid being played on.
      * @param coordinates A list of potential coordinates to try.
      * @return Returns true if any of the given coordinates can be placed on the board.
      */
@@ -176,7 +239,7 @@ public class Bot extends Player {
         int index = 0;
         coordinates.sort(Comparator.comparingInt(CoordinatePair::getSequence));
         Collections.reverse(coordinates);
-        for (CoordinatePair cP: coordinates) {
+        for (CoordinatePair cP : coordinates) {
             System.out.println("HAS CLEAR PATH: " + cP.hasClearPath);
             if (cP.hasClearPath) {
                 index++;
