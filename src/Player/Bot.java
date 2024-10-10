@@ -88,7 +88,7 @@ public class Bot extends Player {
                     if (opponentRow == boardSize - 1) {
                         System.out.println("BLOCKING: ROW");
                         //TODO This did not work on test. Double check coordinates?
-                        coordinatePairsToCheck.add(new CoordinatePair(i + 1, j, i - opponentRow, j, 0, true));
+                        coordinatePairsToCheck.add(new CoordinatePair(j + 1, i, j - opponentRow, i, 0, true));
                     }
                 }
 
@@ -113,7 +113,7 @@ public class Bot extends Player {
                 opponentAntiDiagonal++;
                 if (opponentAntiDiagonal == boardSize - 1) {
                     System.out.println("BLOCKING: ANTI-DIAGONAL");
-                    coordinatePairsToCheck.add(new CoordinatePair(i + 1, i - 1, i - 1, i + 1, 0, true));
+                    coordinatePairsToCheck.add(new CoordinatePair(i + 1, i - 1, i - opponentAntiDiagonal, i + opponentAntiDiagonal, 0, true));
                 }
             }
         }
