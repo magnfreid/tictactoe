@@ -153,25 +153,26 @@ public class Game {
      */
     private void chooseBoardSize() {
         while (true) {
-            try {
                 System.out.println("Choose board size (3-9): ");
-                int size = scanner.nextInt();
-                scanner.nextLine();
-                if (size < 3) {
-                    size = 3;
-                    System.out.println("Size set to 3.");
-                } else if (size > 9) {
-                    size = 9;
-                    System.out.println("Size zet to 9.");
+                if (scanner.hasNextInt()) {
+                    int size = scanner.nextInt();
+                    scanner.nextLine();
+                    if (size < 3) {
+                        size = 3;
+                        System.out.println("Size set to 3.");
+                    } else if (size > 9) {
+                        size = 9;
+                        System.out.println("Size zet to 9.");
+                    }
+                    board.setBoardSize(size);
+                    break;
                 }
-                board.setBoardSize(size);
-                break;
-            } catch (Exception e) {
-                scanner.nextLine();
-                System.out.println("Invalid input, try again!");
+             else {
+                 scanner.nextLine();
+                System.out.println("Invalid input, try again!");}
             }
         }
-    }
+
 
     private boolean isEvenRound() {
         return round % 2 == 0;
