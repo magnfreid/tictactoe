@@ -19,7 +19,7 @@ public class Game {
         this.scanner = new Scanner(System.in);
         this.round = 1;
         this.newGame = true;
-        this.p1 = new Human("Player 1", "✘");
+        this.p1 = new Human("Player 1", "X");
     }
 
     /**
@@ -43,10 +43,10 @@ public class Game {
             System.out.println("Play against computer? Type \"yes\" or \"no\".");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")) {
-                p2 = new Bot("BOT", "⦿");
+                p2 = new Bot("BOT", "O");
                 break;
             } else if (input.equalsIgnoreCase("no") || input.equalsIgnoreCase("n")) {
-                p2 = new Human("Player 2", "●");
+                p2 = new Human("Player 2", "O");
                 break;
             }
         }
