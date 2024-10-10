@@ -21,6 +21,15 @@ public class Bot extends Player {
         int x1, y1, x2, y2, sequence;
         boolean hasClearPath;
 
+        /**
+         * Helper class to store pair of coordinates. Coordinates represent the coordinate right after and right before a row of markers (in any direction).
+         * @param x1 First pair x-coordinate
+         * @param y1 First pair y-coordinate
+         * @param x2 Second pair x-coordinate
+         * @param y2 Second pair y-coordinate
+         * @param sequence How long the sequence of markers is (eg 3 for 3 in a row in any direction).
+         * @param hasClearPath If the checked line has a clear path (ie not occupied by the opponent).
+         */
         public CoordinatePair(int x1, int y1, int x2, int y2, int sequence, boolean hasClearPath) {
             this.x1 = x1;
             this.y1 = y1;
