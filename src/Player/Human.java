@@ -5,7 +5,7 @@ import Game.Board;
 import java.util.Scanner;
 
 public class Human extends Player {
-    public Human(String name, String marker) {
+    public Human(String name, char marker) {
         super(name, marker);
     }
 
@@ -19,30 +19,27 @@ public class Human extends Player {
     @Override
     public boolean placeMarkerCheckValid(Board board) {
         Scanner scanner = new Scanner(System.in);
-        int x;
-        int y;
+        int x = 0;
+        int y = 0;
         while (true) {
-            try {
-                System.out.println(name + ", where do you want to place your marker? " + "(" + marker + ")");
-                System.out.println("x:");
+            System.out.println(name + ", where do you want to place your marker? " + "(" + marker + ")");
+            System.out.println("x:");
+            if (scanner.hasNextInt()) {
                 x = scanner.nextInt();
-                scanner.nextLine();
-                System.out.println("y:");
+            }
+            scanner.nextLine();
+            System.out.println("y:");
+            if (scanner.hasNextInt()) {
                 y = scanner.nextInt();
-                scanner.nextLine();
+            }
+            scanner.nextLine();
+            if ((x > 0 && x <= board.getBoardSize()) && (y > 0 && y <= board.getBoardSize())) {
                 break;
-            } catch (Exception e) {
-                scanner.nextLine();
-                System.out.println("Invalid input, try again!");
+            } else {
+                System.out.println("Invalid input, try again! Make sure to check that your position is on the board.");
             }
         }
-        Object position;
-        try {
-            position = board.getGrid()[x - 1][y - 1];
-        } catch (Exception e) {
-            System.out.println("You cannot place a marker on x: " + x + " y: " + y + " because it is not on the board! Try again.");
-            return false;
-        }
+        Object position = board.getGrid()[x - 1][y - 1];
         if (position == null) {
             board.getGrid()[x - 1][y - 1] = this;
             System.out.println(name + " placed a marker on x: " + x + " y: " + y);

@@ -4,10 +4,10 @@ import Game.Board;
 
 public abstract class Player {
     protected String name;
-    protected String marker;
+    protected char marker;
     protected int score;
 
-    public Player(String name, String marker) {
+    public Player(String name, char marker) {
         this.name = name;
         this.marker = marker;
         this.score = 0;
@@ -23,7 +23,7 @@ public abstract class Player {
         this.name = name;
     }
 
-    public String getMarker() {
+    public char getMarker() {
         return marker;
     }
 

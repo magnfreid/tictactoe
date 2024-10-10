@@ -1,6 +1,7 @@
 package Player;
 
 import Game.Board;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,7 +10,7 @@ import java.util.Random;
 public class Bot extends Player {
     final private Random random;
 
-    public Bot(String name, String marker) {
+    public Bot(String name, char marker) {
         super(name, marker);
         this.random = new Random();
     }
@@ -43,8 +44,7 @@ public class Bot extends Player {
     public boolean placeMarkerCheckValid(Board board) {
         if (blockEnemyWin(board)) {
             return true;
-        }
-        else if (smartPositionFound(board)) {
+        } else if (smartPositionFound(board)) {
             return true;
         } else {
             while (true) {
@@ -61,12 +61,18 @@ public class Bot extends Player {
         }
     }
 
+    /**
+     * Tries to block opponent from winning by placing a marker at the end of opponents row. Only works if opponent has formed an adjacent line.
+     *
+     * @param board The board that is being played.
+     * @return Returns true if it finds a place to block and places a marker.
+     */
     public boolean blockEnemyWin(Board board) {
         Object[][] grid = board.getGrid();
         int boardSize = board.getBoardSize();
         int opponentColumn;
         int opponentRow;
-        ArrayList<CoordinatePair> coordinatePairsToCheck = new ArrayList<>();
+        ArrayList<CoordinatePair> coordinatesToCheck = new ArrayList<>();
         //Rows and Columns
         for (int i = 0; i < boardSize; i++) {
             opponentColumn = 0;
@@ -78,7 +84,7 @@ public class Bot extends Player {
                     opponentColumn++;
                     if (opponentColumn == boardSize - 1) {
                         System.out.println("BLOCKING: COLUMN");
-                        coordinatePairsToCheck.add(new CoordinatePair(i, j + 1, i, j - opponentColumn, 0, true));
+                        coordinatesToCheck.add(new CoordinatePair(i, j + 1, i, j - opponentColumn, 0, true));
                     }
                 }
                 if (grid[j][i] == null || grid[j][i] == this) {
@@ -87,8 +93,7 @@ public class Bot extends Player {
                     opponentRow++;
                     if (opponentRow == boardSize - 1) {
                         System.out.println("BLOCKING: ROW");
-                        //TODO This did not work on test. Double check coordinates?
-                        coordinatePairsToCheck.add(new CoordinatePair(j + 1, i, j - opponentRow, i, 0, true));
+                        coordinatesToCheck.add(new CoordinatePair(j + 1, i, j - opponentRow, i, 0, true));
                     }
                 }
 
@@ -104,7 +109,7 @@ public class Bot extends Player {
                 opponentDiagonal++;
                 if (opponentDiagonal == boardSize - 1) {
                     System.out.println("BLOCKING: DIAGONAL");
-                    coordinatePairsToCheck.add(new CoordinatePair(i + 1, i + 1, i - opponentDiagonal, i - opponentDiagonal, 0, true));
+                    coordinatesToCheck.add(new CoordinatePair(i + 1, i + 1, i - opponentDiagonal, i - opponentDiagonal, 0, true));
                 }
             }
             if (grid[i][boardSize - 1 - i] == null || grid[i][boardSize - 1 - i] == this) {
@@ -113,11 +118,11 @@ public class Bot extends Player {
                 opponentAntiDiagonal++;
                 if (opponentAntiDiagonal == boardSize - 1) {
                     System.out.println("BLOCKING: ANTI-DIAGONAL");
-                    coordinatePairsToCheck.add(new CoordinatePair(i + 1, i - 1, i - opponentAntiDiagonal, i + opponentAntiDiagonal, 0, true));
+                    coordinatesToCheck.add(new CoordinatePair(i + 1, i - 1, i - opponentAntiDiagonal, i + opponentAntiDiagonal, 0, true));
                 }
             }
         }
-        return (tryPlaceMarker(grid, coordinatePairsToCheck));
+        return (tryPlaceMarker(grid, coordinatesToCheck));
     }
 
     /**

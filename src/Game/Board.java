@@ -22,13 +22,13 @@ public class Board {
             System.out.print(y + 1 + " ");
             for (int x = 0; x < boardSize; x++) {
                 Object position = grid[x][y];
-                String draw;
+                char draw;
                 if (position == p1) {
                     draw = p1.getMarker();
                 } else if (position == p2) {
                     draw = p2.getMarker();
                 } else {
-                    draw = "_";
+                    draw = '_';
                 }
                 System.out.print("|" + draw);
             }
