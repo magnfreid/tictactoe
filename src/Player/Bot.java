@@ -87,8 +87,9 @@ public class Bot extends Player {
                     opponentRow = 0;
                 } else {
                     opponentRow++;
-                    if (opponentColumn == boardSize - 1) {
+                    if (opponentRow == boardSize - 1) {
                         System.out.println("BLOCKING: ROW");
+                        //TODO This did not work on test. Double check coordinates?
                         coordinatePairsToCheck.add(new CoordinatePair(i + 1, j, i - opponentRow, j, 0, true));
                     }
                 }
