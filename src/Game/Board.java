@@ -1,16 +1,23 @@
 package Game;
 
+import Game.BoardNavigation.Coordinate;
+import Game.BoardNavigation.Line;
+import Player.Bot.Analyzer;
 import Player.Player;
+
+import java.util.ArrayList;
 
 
 public class Board {
     private int boardSize;
     private Object[][] grid;
+    final private Analyzer analyzer;
 
 
     public Board() {
         this.boardSize = 3;
         this.grid = new Object[boardSize][boardSize];
+        this.analyzer = new Analyzer(this);
     }
 
     /**
@@ -49,12 +56,12 @@ public class Board {
      * @return Returns true if player is a winner.
      */
     public boolean checkWinner(Player player) {
-        boolean winner;
-        //Checks columns
-        for (int x = 0; x < boardSize; x++) {
+        ArrayList<Line> allLines = analyzer.getAllLines();
+        boolean winner = true;
+        for (Line line : allLines) {
             winner = true;
-            for (int y = 0; y < boardSize; y++) {
-                if (grid[x][y] != player) {
+            for (Coordinate coordinate : line.coordinates()) {
+                if (coordinate.getContent() != player) {
                     winner = false;
                     break;
                 }
@@ -63,37 +70,6 @@ public class Board {
                 return true;
             }
         }
-        //Checks rows
-        for (int y = 0; y < boardSize; y++) {
-            winner = true;
-            for (int x = 0; x < boardSize; x++) {
-                if (grid[x][y] != player) {
-                    winner = false;
-                    break;
-                }
-            }
-            if (winner) {
-                return true;
-            }
-        }
-        //Checks diagonal
-        winner = true;
-        for (int i = 0; i < boardSize; i++) {
-            if (grid[i][i] != player) {
-                winner = false;
-                break;
-            }
-        }
-        if (winner) {
-            return true;
-        }
-        //Checks anti-diagonal
-        winner = true;
-        for (int i = 0; i < boardSize; i++)
-            if (grid[i][boardSize - 1 - i] != player) {
-                winner = false;
-                break;
-            }
         return winner;
     }
 

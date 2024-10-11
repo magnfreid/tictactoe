@@ -47,71 +47,6 @@ public class Bot extends Player {
         }
     }
 
-    /**
-     * Checks if opponent has a line of adjacent markers that is 1 off from filling the
-     * line and winning the game, then tries to fill that space.
-     * Currently only works if the last, empty spot is at the edge of the game board.
-     *
-     * @param board The board that is being played.
-     * @return Returns true if it finds a place to block and places a marker.
-     */
-/*    public boolean blockEnemyWin(Board board) {
-        Object[][] grid = board.getGrid();
-        int boardSize = board.getBoardSize();
-        int opponentColumn;
-        int opponentRow;
-        ArrayList<CoordinatePair> coordinatesToTry = new ArrayList<>();
-        //Rows and Columns
-        for (int i = 0; i < boardSize; i++) {
-            opponentColumn = 0;
-            opponentRow = 0;
-            for (int j = 0; j < boardSize; j++) {
-                if (grid[i][j] == null || grid[i][j] == this) {
-                    opponentColumn = 0;
-                } else {
-                    opponentColumn++;
-                    if (opponentColumn == boardSize - 1) {
-                        System.out.println("BLOCKING: COLUMN");
-                        coordinatesToTry.add(new CoordinatePair(i, j + 1, i, j - opponentColumn, 0, true));
-                    }
-                }
-                if (grid[j][i] == null || grid[j][i] == this) {
-                    opponentRow = 0;
-                } else {
-                    opponentRow++;
-                    if (opponentRow == boardSize - 1) {
-                        System.out.println("BLOCKING: ROW");
-                        coordinatesToTry.add(new CoordinatePair(j + 1, i, j - opponentRow, i, 0, true));
-                    }
-                }
-
-            }
-        }
-        //Diagonal and anti-diagonal
-        int opponentDiagonal = 0;
-        int opponentAntiDiagonal = 0;
-        for (int i = 0; i < boardSize; i++) {
-            if (grid[i][i] == null || grid[i][i] == this) {
-                opponentDiagonal = 0;
-            } else {
-                opponentDiagonal++;
-                if (opponentDiagonal == boardSize - 1) {
-                    System.out.println("BLOCKING: DIAGONAL");
-                    coordinatesToTry.add(new CoordinatePair(i + 1, i + 1, i - opponentDiagonal, i - opponentDiagonal, 0, true));
-                }
-            }
-            if (grid[i][boardSize - 1 - i] == null || grid[i][boardSize - 1 - i] == this) {
-                opponentAntiDiagonal = 0;
-            } else {
-                opponentAntiDiagonal++;
-                if (opponentAntiDiagonal == boardSize - 1) {
-                    System.out.println("BLOCKING: ANTI-DIAGONAL");
-                    coordinatesToTry.add(new CoordinatePair(i + 1, i - 1, i - opponentAntiDiagonal, i + opponentAntiDiagonal, 0, true));
-                }
-            }
-        }
-        return (tryPlaceMarker(board, coordinatesToTry));
-    }*/
     public boolean blockEnemyWin(Board board) {
         int boardSize = board.getBoardSize();
         Analyzer analyzer = new Analyzer(board);
@@ -284,6 +219,7 @@ public class Bot extends Player {
      */
     private boolean tryPlaceMarker(Board board, ArrayList<CoordinatePair> coordinatePairsToCheck) {
         int index = 0;
+        Object[][] grid = board.getGrid();
         coordinatePairsToCheck.sort(Comparator.comparingInt(CoordinatePair::getSequence));
         Collections.reverse(coordinatePairsToCheck);
         for (CoordinatePair cp : coordinatePairsToCheck) {
@@ -293,13 +229,13 @@ public class Bot extends Player {
                 Coordinate startCoordinate = cp.getCoordinateStart();
                 Coordinate endCoordinate = cp.getCoordinateEnd();
                 if (isValidPlacement(board, startCoordinate.getX(), startCoordinate.getY()) && startCoordinate.getContent() == null) {
-                 startCoordinate.setContent(this);
+                    grid[startCoordinate.getX()][startCoordinate.getY()] = this;
                     System.out.println(name + " placed a marker on x: " + (startCoordinate.getX() + 1) + " y: " + (startCoordinate.getY() + 1));
                     return true;
                 }
                 System.out.println("BOT is thinking...");
                 if (isValidPlacement(board, endCoordinate.getX(), endCoordinate.getY()) && endCoordinate.getContent() == null) {
-                    endCoordinate.setContent(this);
+                    grid[endCoordinate.getX()][endCoordinate.getY()] = this;
                     System.out.println(name + " placed a marker on x: " + (endCoordinate.getX() + 1) + " y: " + (endCoordinate.getY() + 1));
                     return true;
                 }
