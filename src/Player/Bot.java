@@ -23,11 +23,12 @@ public class Bot extends Player {
 
         /**
          * Helper class to store pair of coordinates. Coordinates represent the coordinate right after and right before a row of markers (in any direction).
-         * @param x1 First pair x-coordinate
-         * @param y1 First pair y-coordinate
-         * @param x2 Second pair x-coordinate
-         * @param y2 Second pair y-coordinate
-         * @param sequence How long the sequence of markers is (eg 3 for 3 in a row in any direction).
+         *
+         * @param x1           First pair x-coordinate
+         * @param y1           First pair y-coordinate
+         * @param x2           Second pair x-coordinate
+         * @param y2           Second pair y-coordinate
+         * @param sequence     How long the sequence of markers is (eg 3 for 3 in a row in any direction).
          * @param hasClearPath If the checked line has a clear path (ie not occupied by the opponent).
          */
         public CoordinatePair(int x1, int y1, int x2, int y2, int sequence, boolean hasClearPath) {
@@ -75,7 +76,7 @@ public class Bot extends Player {
 
     /**
      * Checks if opponent has a line of adjacent markers that is 1 off from filling the
-     * line and winning the game then tries to fill that space.
+     * line and winning the game, then tries to fill that space.
      * Currently only works if the last, empty spot is at the edge of the game board.
      *
      * @param board The board that is being played.
@@ -234,6 +235,7 @@ public class Bot extends Player {
                     System.out.println("Checking: ANTI-DIAGONAL");
                     highestInSequence = inSequence;
                     //Coordinates for inserting upper left corner and lower right corner of diagonal
+                    //TODO check if this is starting from the place I am thinking it does!
                     CoordinatePair coordinatePair = new CoordinatePair(i - 1, i + 1, i + inSequence, i + inSequence, inSequence, hasClearPath);
                     coordinatesToCheck.add(coordinatePair);
                 }
@@ -269,7 +271,7 @@ public class Bot extends Player {
                     System.out.println(name + " placed a marker on x: " + (cP.x1 + 1) + " y: " + (cP.y1 + 1));
                     return true;
                 }
-                System.out.println("Bot is thinking...");
+                System.out.println("BOT is thinking...");
                 if (isValidPlacement(board, cP.x2, cP.y2) && grid[cP.x2][cP.y2] == null) {
                     grid[cP.x2][cP.y2] = this;
                     System.out.println(name + " placed a marker on x: " + (cP.x2 + 1) + " y: " + (cP.y2 + 1));
