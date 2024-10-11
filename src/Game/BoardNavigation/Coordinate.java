@@ -1,7 +1,5 @@
 package Game.BoardNavigation;
 
-import javax.print.attribute.standard.JobKOctets;
-
 public class Coordinate {
     final int x, y;
     Object content;

@@ -24,6 +24,10 @@ public class CoordinatePair {
         return sequence;
     }
 
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
+    }
+
     public Coordinate getCoordinateStart() {
         return coordinateStart;
     }

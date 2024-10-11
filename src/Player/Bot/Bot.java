@@ -30,9 +30,9 @@ public class Bot extends Player {
     public boolean placeMarkerCheckValid(Board board) {
         if (blockEnemyWin(board)) {
             return true;}
-        /* else if (smartPositionFound(board)) {
+         else if (smartPositionFound(board)) {
             return true;
-        }*/ else {
+        } else {
             while (true) {
                 //TODO Optimize to not try the same random coordinate twice. HashSet?
                 int x = random.nextInt(0, board.getBoardSize());
@@ -59,6 +59,7 @@ public class Bot extends Player {
                     if (coordinate.getContent() != null && coordinate.getContent() != this) {
                         opponentSequence++;
                         if (opponentSequence >= board.getBoardSize() - 1) {
+                            System.out.println("ROW BLOCK FOUND");
                             coordinatesToBlock.add(getCoordinatePairRow(coordinate, boardSize));
                         }
                     } else opponentSequence = 0;
@@ -70,6 +71,7 @@ public class Bot extends Player {
                     if (coordinate.getContent() != null && coordinate.getContent() != this) {
                         opponentSequence++;
                         if (opponentSequence >= board.getBoardSize() - 1) {
+                            System.out.println("COLUMN BLOCK FOUND");
                             coordinatesToBlock.add(getCoordinatePairColumn(coordinate, boardSize));
                         }
                     } else opponentSequence = 0;
@@ -81,6 +83,7 @@ public class Bot extends Player {
                     if (coordinate.getContent() != null && coordinate.getContent() != this) {
                         opponentSequence++;
                         if (opponentSequence >= board.getBoardSize() - 1) {
+                            System.out.println("DIAGONAL BLOCK FOUND");
                             coordinatesToBlock.add(getCoordinatePairDiagonal(coordinate, boardSize));
                         }
                     } else opponentSequence = 0;
@@ -92,6 +95,7 @@ public class Bot extends Player {
                     if (coordinate.getContent() != null && coordinate.getContent() != this) {
                         opponentSequence++;
                         if (opponentSequence >= board.getBoardSize() - 1) {
+                            System.out.println("ANTI-DIAGONAL BLOCK FOUND");
                             coordinatesToBlock.add(getCoordinatePairAntiDiagonal(coordinate, boardSize));
                         }
                     } else opponentSequence = 0;
@@ -108,107 +112,93 @@ public class Bot extends Player {
      * @param board The board being played on.
      * @return Returns true if a smart placement is found.
      */
-   /* public boolean smartPositionFound(Board board) {
+    public boolean smartPositionFound(Board board) {
+       Analyzer analyzer = new Analyzer(board);
         int boardSize = board.getBoardSize();
         Object[][] grid = board.getGrid();
         ArrayList<CoordinatePair> coordinatesToCheck = new ArrayList<>();
-        int highestInSequence = 0;
-        boolean hasClearPath;
-        //Column
-        for (int x = 0; x < boardSize; x++) {
-            int inSequence = 0;
-            hasClearPath = true;
-            for (int y = 0; y < boardSize; y++) {
-                if (grid[x][y] != this) {
-                    if (grid[x][y] != null) {
-                        hasClearPath = false;
+        ArrayList<Line> allLines = analyzer.getAllLines();
+        int highestSequence = 0;
+        int currentSequence;
+        for (Line line : allLines) {
+            if (Objects.equals(line.type(), "row")) {
+                currentSequence = 0;
+                for (Coordinate coordinate : line.coordinates()) {
+                    if (grid[coordinate.getX()][coordinate.getY()] != this) {
+                        currentSequence = 0;
                     }
-                    inSequence = 0;
-                } else {
-                    inSequence++;
-                    if (inSequence >= highestInSequence) {
-                        System.out.println("Checking: COLUMN");
-                        highestInSequence = inSequence;
-                        //Coordinates for inserting above and below column
-                        CoordinatePair coordinatePair = new CoordinatePair(x, y + 1, x, y - highestInSequence, inSequence, hasClearPath);
-                        coordinatesToCheck.add(coordinatePair);
+                    else {
+                        currentSequence++;
+                        if (currentSequence >= highestSequence) {
+                            highestSequence = currentSequence;
+                            System.out.println("ROW ADDED");
+                            CoordinatePair coordinatePair = getCoordinatePairRow(coordinate, boardSize);
+                            coordinatePair.setSequence(highestSequence);
+                            coordinatesToCheck.add(coordinatePair);
+                        }
+                    }
+                }
+            }   if (Objects.equals(line.type(), "column")) {
+                currentSequence = 0;
+                for (Coordinate coordinate : line.coordinates()) {
+                    if (grid[coordinate.getX()][coordinate.getY()] != this) {
+                        currentSequence = 0;
+                    }
+                    else {
+                        currentSequence++;
+                        if (currentSequence >= highestSequence) {
+                            highestSequence = currentSequence;
+                            System.out.println("COLUMN ADDED");
+                            CoordinatePair coordinatePair = getCoordinatePairColumn(coordinate, boardSize);
+                            coordinatePair.setSequence(highestSequence);
+                            coordinatesToCheck.add(coordinatePair);
+                        }
+                    }
+                }
+            }   if (Objects.equals(line.type(), "diagonal")) {
+                currentSequence = 0;
+                for (Coordinate coordinate : line.coordinates()) {
+                    if (grid[coordinate.getX()][coordinate.getY()] != this) {
+                        currentSequence = 0;
+                    }
+                    else {
+                        currentSequence++;
+                        if (currentSequence >= highestSequence) {
+                            highestSequence = currentSequence;
+                            System.out.println("DIAGONAL ADDDED");
+                            CoordinatePair coordinatePair = getCoordinatePairDiagonal(coordinate, boardSize);
+                            coordinatePair.setSequence(highestSequence);
+                            coordinatesToCheck.add(coordinatePair);
+                        }
+                    }
+                }
+            }   if (Objects.equals(line.type(), "anti-diagonal")) {
+                currentSequence = 0;
+                for (Coordinate coordinate : line.coordinates()) {
+                    if (grid[coordinate.getX()][coordinate.getY()] != this) {
+                        currentSequence = 0;
+                    }
+                    else {
+                        currentSequence++;
+                        if (currentSequence >= highestSequence) {
+                            highestSequence = currentSequence;
+                            CoordinatePair coordinatePair = getCoordinatePairAntiDiagonal(coordinate, boardSize);
+                            coordinatePair.setSequence(highestSequence);
+                            coordinatesToCheck.add(coordinatePair);
+                            System.out.println("ANTI-DIAGONAL ADDED");
+                        }
                     }
                 }
             }
         }
-        //Row
-        highestInSequence = 0;
-        for (int y = 0; y < boardSize; y++) {
-            int inSequence = 0;
-            hasClearPath = true;
-            for (int x = 0; x < boardSize; x++) {
-                if (grid[x][y] != this) {
-                    if (grid[x][y] != null) {
-                        hasClearPath = false;
-                    }
-                    inSequence = 0;
-                } else {
-                    inSequence++;
-                    if (inSequence >= highestInSequence) {
-                        System.out.println("Checking: ROW");
-                        highestInSequence = inSequence;
-                        //Coordinates for inserting left and right of row
-                        CoordinatePair coordinatePair = new CoordinatePair(x + 1, y, x - highestInSequence, y, inSequence, hasClearPath);
-                        coordinatesToCheck.add(coordinatePair);
-                    }
-                }
-            }
-        }
-        //Diagonal
-        highestInSequence = 0;
-        int inSequence = 0;
-        hasClearPath = true;
-        for (int i = 0; i < boardSize; i++) {
-            if (grid[i][i] != this) {
-                if (grid[i][i] != null) {
-                    hasClearPath = false;
-                }
-                inSequence = 0;
-            } else {
-                inSequence++;
-                if (inSequence >= highestInSequence) {
-                    System.out.println("Checking: DIAGONAL");
-                    highestInSequence = inSequence;
-                    //Coordinates for inserting upper right corner and lower left corner of diagonal
-                    CoordinatePair coordinatePair = new CoordinatePair(i + 1, i + 1, i - inSequence, i - inSequence, inSequence, hasClearPath);
-                    coordinatesToCheck.add(coordinatePair);
-                }
-            }
-        }
-        //Anti-diagonal
-        highestInSequence = 0;
-        inSequence = 0;
-        hasClearPath = true;
-        for (int i = 0; i < boardSize; i++)
-            if (grid[i][boardSize - 1 - i] != this) {
-                if (grid[i][boardSize - 1 - i] != null) {
-                    hasClearPath = false;
-                }
-                inSequence = 0;
-            } else {
-                inSequence++;
-                if (inSequence >= highestInSequence) {
-                    System.out.println("Checking: ANTI-DIAGONAL");
-                    highestInSequence = inSequence;
-                    //Coordinates for inserting upper left corner and lower right corner of diagonal
-                    //TODO check if this is starting from the place I am thinking it does!
-                    CoordinatePair coordinatePair = new CoordinatePair(i - 1, i + 1, i + inSequence, i + inSequence, inSequence, hasClearPath);
-                    coordinatesToCheck.add(coordinatePair);
-                }
-            }
         if (tryPlaceMarker(board, coordinatesToCheck)) {
-            System.out.println("PLACEMENT FOUND");
+            System.out.println("SMART PLACEMENT FOUND");
             return true;
         } else {
             System.out.println("NO BEST PLACEMENT FOUND");
             return false;
         }
-    }*/
+    }
 
     /**
      * Sorts the coordinates passed to it by sequence length. Tries coordinates with a clear path based on highest sequence length.
@@ -228,18 +218,18 @@ public class Bot extends Player {
                 System.out.println("TRY: " + index);
                 Coordinate startCoordinate = cp.getCoordinateStart();
                 Coordinate endCoordinate = cp.getCoordinateEnd();
-                if (isValidPlacement(board, startCoordinate.getX(), startCoordinate.getY()) && startCoordinate.getContent() == null) {
+                if (isValidPlacement(board, startCoordinate.getX(), startCoordinate.getY()) && grid[startCoordinate.getX()][startCoordinate.getY()] == null) {
                     grid[startCoordinate.getX()][startCoordinate.getY()] = this;
                     System.out.println(name + " placed a marker on x: " + (startCoordinate.getX() + 1) + " y: " + (startCoordinate.getY() + 1));
                     return true;
                 }
-                System.out.println("BOT is thinking...");
-                if (isValidPlacement(board, endCoordinate.getX(), endCoordinate.getY()) && endCoordinate.getContent() == null) {
+                System.out.println("START PLACEMENT DENIED");
+                if (isValidPlacement(board, endCoordinate.getX(), endCoordinate.getY()) && grid[endCoordinate.getX()][endCoordinate.getY()] == null) {
                     grid[endCoordinate.getX()][endCoordinate.getY()] = this;
                     System.out.println(name + " placed a marker on x: " + (endCoordinate.getX() + 1) + " y: " + (endCoordinate.getY() + 1));
                     return true;
                 }
-                System.out.println("BOT is thinking some more...");
+                System.out.println("END PLACEMENT DENIED");
             }
         }
         return false;
@@ -252,34 +242,25 @@ public class Bot extends Player {
 
     private CoordinatePair getCoordinatePairRow(Coordinate coordinate, int boardSize) {
         Coordinate coordinateStart = new Coordinate(coordinate.getX() - boardSize, coordinate.getY());
-        coordinateStart.setContent(coordinate.getContent());
         Coordinate coordinateEnd = new Coordinate(coordinate.getX() + 1, coordinate.getY());
-        coordinateEnd.setContent(coordinate.getContent());
         return new CoordinatePair(coordinateStart, coordinateEnd);
     }
 
     private CoordinatePair getCoordinatePairColumn(Coordinate coordinate, int boardSize) {
         Coordinate coordinateStart = new Coordinate(coordinate.getX(), coordinate.getY()-boardSize);
-        coordinateStart.setContent(coordinate.getContent());
         Coordinate coordinateEnd = new Coordinate(coordinate.getX(), coordinate.getY()+1);
-        coordinateEnd.setContent(coordinate.getContent());
         return new CoordinatePair(coordinateStart, coordinateEnd);
     }
 
     private CoordinatePair getCoordinatePairDiagonal(Coordinate coordinate, int boardSize) {
         Coordinate coordinateStart = new Coordinate(coordinate.getX() - boardSize, coordinate.getY()-boardSize);
-        coordinateStart.setContent(coordinate.getContent());
         Coordinate coordinateEnd = new Coordinate(coordinate.getX() + 1, coordinate.getY()+1);
-        coordinateEnd.setContent(coordinate.getContent());
-
         return new CoordinatePair(coordinateStart, coordinateEnd);
     }
 
     private CoordinatePair getCoordinatePairAntiDiagonal(Coordinate coordinate, int boardSize) {
         Coordinate coordinateStart = new Coordinate(coordinate.getX() - boardSize, coordinate.getY()+boardSize);
-        coordinateStart.setContent(coordinate.getContent());
         Coordinate coordinateEnd = new Coordinate(coordinate.getX() + 1, coordinate.getY()-1);
-        coordinateEnd.setContent(coordinate.getContent());
         return new CoordinatePair(coordinateStart, coordinateEnd);
     }
 }

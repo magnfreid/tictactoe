@@ -21,6 +21,7 @@ public class Analyzer {
         int boardSize = board.getBoardSize();
         ArrayList<Coordinate> diagonal = new ArrayList<>();
         ArrayList<Coordinate> antiDiagonal = new ArrayList<>();
+        //Rows and columns
         for (int i = 0; i < boardSize; i++) {
             ArrayList<Coordinate> row = new ArrayList<>();
             ArrayList<Coordinate> column = new ArrayList<>();
@@ -31,6 +32,7 @@ public class Analyzer {
             lines.add(new Line(row, "row"));
             lines.add(new Line(column, "column"));
         }
+        //Diagonal and anti-diagonal
         for (int i = 0; i < boardSize; i++) {
             diagonal.add(new Coordinate(i, i, grid[i][i]));
             antiDiagonal.add(new Coordinate(i, boardSize - 1 - i, grid[i][boardSize - 1 - i]));
