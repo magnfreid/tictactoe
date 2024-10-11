@@ -2,9 +2,13 @@ package Game.BoardNavigation;
 
 import java.util.ArrayList;
 
+/**
+ * A single line on the game board (any direction). Stores all coordinates and has a String type to sort through directions.
+ * Has a clearPath boolean for Bot to check if opponent has markers in the line or not.
+ */
 public class Line {
-    private ArrayList<Coordinate> coordinates;
-    private String type;
+    private final ArrayList<Coordinate> coordinates;
+    private final String type;
     private boolean clearPath;
 
     public Line(ArrayList<Coordinate> coordinates, String type) {
@@ -17,16 +21,8 @@ public class Line {
         return coordinates;
     }
 
-    public void setCoordinates(ArrayList<Coordinate> coordinates) {
-        this.coordinates = coordinates;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public boolean hasClearPath() {

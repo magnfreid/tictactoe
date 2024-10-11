@@ -1,5 +1,8 @@
 package Game.BoardNavigation;
 
+/**
+ * Stores int x- and int y- coordinates as well as its content Object (null or Player)
+ */
 public class Coordinate {
     final int x, y;
     Object content;
@@ -18,10 +21,6 @@ public class Coordinate {
 
     public Object getContent() {
         return content;
-    }
-
-    public void setContent(Object content) {
-        this.content = content;
     }
 
     public int getX() {

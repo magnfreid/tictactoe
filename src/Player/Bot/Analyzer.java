@@ -7,6 +7,9 @@ import Game.BoardNavigation.Line;
 
 import java.util.ArrayList;
 
+/**
+ * Helper class for the Bot class. Finds all possible lines on the board.
+ */
 public class Analyzer {
     final private Board board;
 
@@ -15,6 +18,12 @@ public class Analyzer {
     }
 
 
+    /**
+     * Finds all positions on the board's grid and turns them into coordinates, which are then put into lines.
+     * Often used by bot.
+     *
+     * @return A list of all the lines on the board.
+     */
     public ArrayList<Line> getAllLines() {
         ArrayList<Line> lines = new ArrayList<>();
         Object[][] grid = board.getGrid();

@@ -2,6 +2,7 @@ package Player;
 
 import Game.Board;
 
+
 public abstract class Player {
     protected String name;
     protected char marker;

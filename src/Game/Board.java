@@ -7,7 +7,9 @@ import Player.Player;
 
 import java.util.ArrayList;
 
-
+/**
+ * Class containing the game board. Responsible for drawing the board in the terminal and checking winners or if board is full.
+ */
 public class Board {
     private int boardSize;
     private Object[][] grid;
@@ -50,10 +52,10 @@ public class Board {
     }
 
     /**
-     * Loops through rows, columns and diagonals to check if the player has filled a row.
+     * Checks all lines provided by Analyzer class for a full row (winner).
      *
-     * @param player The current player being checked for winner.
-     * @return Returns true if player is a winner.
+     * @param player The player being checked.
+     * @return Returns true if player has won.
      */
     public boolean checkWinner(Player player) {
         ArrayList<Line> allLines = analyzer.getAllLines();

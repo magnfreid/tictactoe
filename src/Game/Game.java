@@ -6,6 +6,9 @@ import Player.Bot.Bot;
 
 import java.util.Scanner;
 
+/**
+ * The main class of the app. Puts everything together.
+ */
 public class Game {
     final private Board board;
     final private Scanner scanner;
