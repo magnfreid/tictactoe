@@ -10,8 +10,18 @@ public class Analyzer {
         this.board = board;
     }
 
-    public ArrayList<ArrayList<Object>> getAllLines() {
-        ArrayList<ArrayList<Object>> lines = new ArrayList<>();
+     public static class Line{
+        ArrayList<Object> elements;
+        String type;
+
+        public Line(ArrayList<Object> elements, String type){
+            this.elements = elements;
+            this.type = type;
+        }
+    }
+
+    public ArrayList<Line> getAllLines() {
+       ArrayList<Line> lines = new ArrayList<>();
         Object[][] grid = board.getGrid();
         int boardSize = board.getBoardSize();
         ArrayList<Object> diagonal = new ArrayList<>();
@@ -23,15 +33,15 @@ public class Analyzer {
                 row.add(grid[j][i]);
                 column.add(grid[i][j]);
             }
-            lines.add(row);
-            lines.add(column);
+            lines.add(new Line(row, "row"));
+            lines.add(new Line(column, "column"));
         }
         for (int i = 0; i < boardSize; i++) {
             diagonal.add(grid[i][i]);
             antiDiagonal.add(grid[i][boardSize - 1 - i]);
         }
-        lines.add(diagonal);
-        lines.add(antiDiagonal);
+        lines.add(new Line(diagonal, "diagonal"));
+        lines.add(new Line(antiDiagonal, "anti-diagonal"));
         return lines;
     }
 }
