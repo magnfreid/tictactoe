@@ -60,7 +60,7 @@ public class Bot extends Player {
                         opponentSequence++;
                         if (opponentSequence >= board.getBoardSize() - 1) {
                             System.out.println("ROW BLOCK FOUND");
-                            coordinatesToBlock.add(getCoordinatePairRow(coordinate, boardSize));
+                            coordinatesToBlock.add(getCoordinatePairRow(coordinate, opponentSequence));
                         }
                     } else opponentSequence = 0;
                 }
@@ -72,7 +72,7 @@ public class Bot extends Player {
                         opponentSequence++;
                         if (opponentSequence >= board.getBoardSize() - 1) {
                             System.out.println("COLUMN BLOCK FOUND");
-                            coordinatesToBlock.add(getCoordinatePairColumn(coordinate, boardSize));
+                            coordinatesToBlock.add(getCoordinatePairColumn(coordinate, opponentSequence));
                         }
                     } else opponentSequence = 0;
                 }
@@ -84,7 +84,7 @@ public class Bot extends Player {
                         opponentSequence++;
                         if (opponentSequence >= board.getBoardSize() - 1) {
                             System.out.println("DIAGONAL BLOCK FOUND");
-                            coordinatesToBlock.add(getCoordinatePairDiagonal(coordinate, boardSize));
+                            coordinatesToBlock.add(getCoordinatePairDiagonal(coordinate, opponentSequence));
                         }
                     } else opponentSequence = 0;
                 }
@@ -96,7 +96,7 @@ public class Bot extends Player {
                         opponentSequence++;
                         if (opponentSequence >= board.getBoardSize() - 1) {
                             System.out.println("ANTI-DIAGONAL BLOCK FOUND");
-                            coordinatesToBlock.add(getCoordinatePairAntiDiagonal(coordinate, boardSize));
+                            coordinatesToBlock.add(getCoordinatePairAntiDiagonal(coordinate, opponentSequence));
                         }
                     } else opponentSequence = 0;
                 }
@@ -132,8 +132,8 @@ public class Bot extends Player {
                         if (currentSequence >= highestSequence) {
                             highestSequence = currentSequence;
                             System.out.println("ROW ADDED");
-                            CoordinatePair coordinatePair = getCoordinatePairRow(coordinate, boardSize);
-                            coordinatePair.setSequence(highestSequence);
+                            CoordinatePair coordinatePair = getCoordinatePairRow(coordinate, currentSequence);
+                            coordinatePair.setSequence(currentSequence);
                             coordinatesToCheck.add(coordinatePair);
                         }
                     }
@@ -149,8 +149,8 @@ public class Bot extends Player {
                         if (currentSequence >= highestSequence) {
                             highestSequence = currentSequence;
                             System.out.println("COLUMN ADDED");
-                            CoordinatePair coordinatePair = getCoordinatePairColumn(coordinate, boardSize);
-                            coordinatePair.setSequence(highestSequence);
+                            CoordinatePair coordinatePair = getCoordinatePairColumn(coordinate, currentSequence);
+                            coordinatePair.setSequence(currentSequence);
                             coordinatesToCheck.add(coordinatePair);
                         }
                     }
@@ -166,8 +166,8 @@ public class Bot extends Player {
                         if (currentSequence >= highestSequence) {
                             highestSequence = currentSequence;
                             System.out.println("DIAGONAL ADDDED");
-                            CoordinatePair coordinatePair = getCoordinatePairDiagonal(coordinate, boardSize);
-                            coordinatePair.setSequence(highestSequence);
+                            CoordinatePair coordinatePair = getCoordinatePairDiagonal(coordinate, currentSequence);
+                            coordinatePair.setSequence(currentSequence);
                             coordinatesToCheck.add(coordinatePair);
                         }
                     }
@@ -182,8 +182,8 @@ public class Bot extends Player {
                         currentSequence++;
                         if (currentSequence >= highestSequence) {
                             highestSequence = currentSequence;
-                            CoordinatePair coordinatePair = getCoordinatePairAntiDiagonal(coordinate, boardSize);
-                            coordinatePair.setSequence(highestSequence);
+                            CoordinatePair coordinatePair = getCoordinatePairAntiDiagonal(coordinate, currentSequence);
+                            coordinatePair.setSequence(currentSequence);
                             coordinatesToCheck.add(coordinatePair);
                             System.out.println("ANTI-DIAGONAL ADDED");
                         }
@@ -240,26 +240,26 @@ public class Bot extends Player {
     }
 
 
-    private CoordinatePair getCoordinatePairRow(Coordinate coordinate, int boardSize) {
-        Coordinate coordinateStart = new Coordinate(coordinate.getX() - boardSize, coordinate.getY());
+    private CoordinatePair getCoordinatePairRow(Coordinate coordinate, int offset) {
+        Coordinate coordinateStart = new Coordinate(coordinate.getX() - offset, coordinate.getY());
         Coordinate coordinateEnd = new Coordinate(coordinate.getX() + 1, coordinate.getY());
         return new CoordinatePair(coordinateStart, coordinateEnd);
     }
 
-    private CoordinatePair getCoordinatePairColumn(Coordinate coordinate, int boardSize) {
-        Coordinate coordinateStart = new Coordinate(coordinate.getX(), coordinate.getY()-boardSize);
+    private CoordinatePair getCoordinatePairColumn(Coordinate coordinate, int offset) {
+        Coordinate coordinateStart = new Coordinate(coordinate.getX(), coordinate.getY()-offset);
         Coordinate coordinateEnd = new Coordinate(coordinate.getX(), coordinate.getY()+1);
         return new CoordinatePair(coordinateStart, coordinateEnd);
     }
 
-    private CoordinatePair getCoordinatePairDiagonal(Coordinate coordinate, int boardSize) {
-        Coordinate coordinateStart = new Coordinate(coordinate.getX() - boardSize, coordinate.getY()-boardSize);
+    private CoordinatePair getCoordinatePairDiagonal(Coordinate coordinate, int offset) {
+        Coordinate coordinateStart = new Coordinate(coordinate.getX() - offset, coordinate.getY()-offset);
         Coordinate coordinateEnd = new Coordinate(coordinate.getX() + 1, coordinate.getY()+1);
         return new CoordinatePair(coordinateStart, coordinateEnd);
     }
 
-    private CoordinatePair getCoordinatePairAntiDiagonal(Coordinate coordinate, int boardSize) {
-        Coordinate coordinateStart = new Coordinate(coordinate.getX() - boardSize, coordinate.getY()+boardSize);
+    private CoordinatePair getCoordinatePairAntiDiagonal(Coordinate coordinate, int offset) {
+        Coordinate coordinateStart = new Coordinate(coordinate.getX() - offset, coordinate.getY()+offset);
         Coordinate coordinateEnd = new Coordinate(coordinate.getX() + 1, coordinate.getY()-1);
         return new CoordinatePair(coordinateStart, coordinateEnd);
     }
