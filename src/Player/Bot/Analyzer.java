@@ -1,5 +1,9 @@
-package Game;
+package Player.Bot;
 
+
+import Game.Board;
+import Game.BoardNavigation.Coordinate;
+import Game.BoardNavigation.Line;
 
 import java.util.ArrayList;
 
@@ -10,35 +14,26 @@ public class Analyzer {
         this.board = board;
     }
 
-     public static class Line{
-        ArrayList<Object> elements;
-        String type;
-
-        public Line(ArrayList<Object> elements, String type){
-            this.elements = elements;
-            this.type = type;
-        }
-    }
 
     public ArrayList<Line> getAllLines() {
-       ArrayList<Line> lines = new ArrayList<>();
+        ArrayList<Line> lines = new ArrayList<>();
         Object[][] grid = board.getGrid();
         int boardSize = board.getBoardSize();
-        ArrayList<Object> diagonal = new ArrayList<>();
-        ArrayList<Object> antiDiagonal = new ArrayList<>();
+        ArrayList<Coordinate> diagonal = new ArrayList<>();
+        ArrayList<Coordinate> antiDiagonal = new ArrayList<>();
         for (int i = 0; i < boardSize; i++) {
-            ArrayList<Object> row = new ArrayList<>();
-            ArrayList<Object> column = new ArrayList<>();
+            ArrayList<Coordinate> row = new ArrayList<>();
+            ArrayList<Coordinate> column = new ArrayList<>();
             for (int j = 0; j < board.getBoardSize(); j++) {
-                row.add(grid[j][i]);
-                column.add(grid[i][j]);
+                row.add(new Coordinate(j, i, grid[j][i]));
+                column.add(new Coordinate(i, j, grid[i][j]));
             }
             lines.add(new Line(row, "row"));
             lines.add(new Line(column, "column"));
         }
         for (int i = 0; i < boardSize; i++) {
-            diagonal.add(grid[i][i]);
-            antiDiagonal.add(grid[i][boardSize - 1 - i]);
+            diagonal.add(new Coordinate(i, i, grid[i][i]));
+            antiDiagonal.add(new Coordinate(i, boardSize - 1 - i, grid[i][boardSize - 1 - i]));
         }
         lines.add(new Line(diagonal, "diagonal"));
         lines.add(new Line(antiDiagonal, "anti-diagonal"));

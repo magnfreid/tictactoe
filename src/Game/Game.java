@@ -2,7 +2,7 @@ package Game;
 
 import Player.Player;
 import Player.Human;
-import Player.Bot;
+import Player.Bot.Bot;
 
 import java.util.Scanner;
 
