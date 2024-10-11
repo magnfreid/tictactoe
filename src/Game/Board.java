@@ -60,7 +60,7 @@ public class Board {
         boolean winner = true;
         for (Line line : allLines) {
             winner = true;
-            for (Coordinate coordinate : line.coordinates()) {
+            for (Coordinate coordinate : line.getCoordinates()) {
                 if (coordinate.getContent() != player) {
                     winner = false;
                     break;
