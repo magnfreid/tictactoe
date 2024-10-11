@@ -28,6 +28,7 @@ public class CoordinatePair {
         this.sequence = sequence;
     }
 
+
     public Coordinate getCoordinateStart() {
         return coordinateStart;
     }
@@ -38,5 +39,9 @@ public class CoordinatePair {
 
     public boolean hasWinPotential() {
         return hasWinPotential;
+    }
+
+    public void setHasWinPotential(boolean hasWinPotential) {
+        this.hasWinPotential = hasWinPotential;
     }
 }

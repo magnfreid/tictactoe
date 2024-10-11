@@ -114,76 +114,105 @@ public class Bot extends Player {
      */
     public boolean smartPositionFound(Board board) {
        Analyzer analyzer = new Analyzer(board);
-        int boardSize = board.getBoardSize();
         Object[][] grid = board.getGrid();
         ArrayList<CoordinatePair> coordinatesToCheck = new ArrayList<>();
         ArrayList<Line> allLines = analyzer.getAllLines();
         int highestSequence = 0;
         int currentSequence;
+        boolean winPotential;
         for (Line line : allLines) {
             if (Objects.equals(line.type(), "row")) {
                 currentSequence = 0;
+                winPotential = true;
                 for (Coordinate coordinate : line.coordinates()) {
-                    if (grid[coordinate.getX()][coordinate.getY()] != this) {
+                    Object position = grid[coordinate.getX()][coordinate.getY()];
+                    if (position != null && position != this) {
+                        winPotential = false;
+                    }
+                    if (position != this) {
                         currentSequence = 0;
+
                     }
                     else {
                         currentSequence++;
-                        if (currentSequence >= highestSequence) {
+                        if (currentSequence > highestSequence) {
                             highestSequence = currentSequence;
                             System.out.println("ROW ADDED");
                             CoordinatePair coordinatePair = getCoordinatePairRow(coordinate, currentSequence);
                             coordinatePair.setSequence(currentSequence);
+                            coordinatePair.setHasWinPotential(winPotential);
                             coordinatesToCheck.add(coordinatePair);
                         }
                     }
                 }
             }   if (Objects.equals(line.type(), "column")) {
+                highestSequence = 0;
                 currentSequence = 0;
+                winPotential = true;
                 for (Coordinate coordinate : line.coordinates()) {
-                    if (grid[coordinate.getX()][coordinate.getY()] != this) {
+                    Object position = grid[coordinate.getX()][coordinate.getY()];
+                    if (position != null && position != this) {
+                        winPotential = false;
+                    }
+                    if (position != this) {
                         currentSequence = 0;
                     }
                     else {
                         currentSequence++;
-                        if (currentSequence >= highestSequence) {
+                        if (currentSequence > highestSequence) {
                             highestSequence = currentSequence;
                             System.out.println("COLUMN ADDED");
                             CoordinatePair coordinatePair = getCoordinatePairColumn(coordinate, currentSequence);
                             coordinatePair.setSequence(currentSequence);
+                            coordinatePair.setHasWinPotential(winPotential);
                             coordinatesToCheck.add(coordinatePair);
                         }
                     }
                 }
             }   if (Objects.equals(line.type(), "diagonal")) {
+                highestSequence = 0;
                 currentSequence = 0;
+                winPotential = true;
                 for (Coordinate coordinate : line.coordinates()) {
-                    if (grid[coordinate.getX()][coordinate.getY()] != this) {
+                    Object position = grid[coordinate.getX()][coordinate.getY()];
+                    if (position != null && position != this) {
+                        winPotential = false;
+                    }
+                    if (position != this) {
                         currentSequence = 0;
+
                     }
                     else {
                         currentSequence++;
-                        if (currentSequence >= highestSequence) {
+                        if (currentSequence > highestSequence) {
                             highestSequence = currentSequence;
                             System.out.println("DIAGONAL ADDDED");
                             CoordinatePair coordinatePair = getCoordinatePairDiagonal(coordinate, currentSequence);
                             coordinatePair.setSequence(currentSequence);
+                            coordinatePair.setHasWinPotential(winPotential);
                             coordinatesToCheck.add(coordinatePair);
                         }
                     }
                 }
             }   if (Objects.equals(line.type(), "anti-diagonal")) {
+                highestSequence = 0;
                 currentSequence = 0;
+                winPotential = true;
                 for (Coordinate coordinate : line.coordinates()) {
-                    if (grid[coordinate.getX()][coordinate.getY()] != this) {
+                    Object position = grid[coordinate.getX()][coordinate.getY()];
+                    if (position != null && position != this) {
+                        winPotential = false;
+                    }
+                    if (position != this) {
                         currentSequence = 0;
                     }
                     else {
                         currentSequence++;
-                        if (currentSequence >= highestSequence) {
+                        if (currentSequence > highestSequence) {
                             highestSequence = currentSequence;
                             CoordinatePair coordinatePair = getCoordinatePairAntiDiagonal(coordinate, currentSequence);
                             coordinatePair.setSequence(currentSequence);
+                            coordinatePair.setHasWinPotential(winPotential);
                             coordinatesToCheck.add(coordinatePair);
                             System.out.println("ANTI-DIAGONAL ADDED");
                         }
@@ -213,6 +242,7 @@ public class Bot extends Player {
         coordinatePairsToCheck.sort(Comparator.comparingInt(CoordinatePair::getSequence));
         Collections.reverse(coordinatePairsToCheck);
         for (CoordinatePair cp : coordinatePairsToCheck) {
+            System.out.println("cp.hasWinPotential() = " + cp.hasWinPotential());
             if (cp.hasWinPotential()) {
                 index++;
                 System.out.println("TRY: " + index);
